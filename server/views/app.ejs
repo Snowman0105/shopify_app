@@ -10,7 +10,6 @@
 
     <script>
       window.apiKey = "<%= apiKey %>"
-      debugger;
       window.shopOrigin = "https://<%= shop %>"
 
       const shopifyAppConfig = {
@@ -29,8 +28,65 @@
 
       ShopifyApp.init(shopifyAppConfig);
     </script>
-
-    <div id="root"></div>
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css"
+    />
+    <div id="root" style="height: 100%;"></div>
     <script src="/assets/main.js"></script>
   </body>
+  <style>
+    .ui.secondary.pointing.menu {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 0px;
+    }
+    .ui.secondary.pointing.menu .active.item {
+      border-color: #4267b2;
+    }
+    .ui.secondary.pointing.menu .active.item:hover {
+      border-color: #4267b2;
+    }
+    .auth-app {
+      width: 40%;
+    }
+    .fb-button-style {
+      background: #4267b2;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+    }
+    .ui.segment {
+      border: 0px;
+    }
+    .fa-facebook-f {
+      margin-right: 10px;
+      color: #4c69ba;
+      font-size: 25px;
+      background-color: white;
+      border-radius: 10%;
+      width: 25px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      text-align: right;
+      padding-right: 3px;
+    }
+    .fb-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .sub-header {
+      text-align: center;
+      margin-top: 5%;
+      margin-bottom: 5%;
+    }
+    .kep-login-facebook.small {
+      border-radius: 5%;
+    }
+    .ui.attached.segment {
+      border: 0px;
+    }
+  </style>
 </html>

@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import { Layout, Stack, Card, TextField, Button } from '@shopify/polaris';
 import ObjectInspector from 'react-object-inspector';
-import { updatePath, updateParams, sendRequest } from '../actions';
+import { updatePath, updateParams, sendRequest } from '../../actions';
 
-import VerbPicker from './VerbPicker';
+import VerbPicker from '../VerbPicker/VerbPicker.js';
 
 class ApiConsole extends Component {
   render() {

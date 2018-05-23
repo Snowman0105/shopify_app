@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import store from '../client/store';
-import App from './App';
+import App from '../client/modules/App.js';
 
 function renderApp() {
   render(

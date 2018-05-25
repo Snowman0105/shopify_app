@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import store from '../client/store';
 import App from '../client/modules/App.js';
+import '../client/styles.scss';
 
 function renderApp() {
   render(

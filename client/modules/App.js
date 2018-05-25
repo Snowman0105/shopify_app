@@ -4,8 +4,6 @@ import { Route, Switch } from "react-router-dom";
 import { EmbeddedApp } from '@shopify/polaris/embedded';
 import LoginPage from './Auth';
 
-import './styles.scss';
-
 class App extends Component {
   render() {
     const { apiKey, shopOrigin } = window;

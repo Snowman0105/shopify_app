@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import { Header, Container, Tab, List, Item } from 'semantic-ui-react';
 import FacebookLogin from 'react-facebook-login';
 
-class FBButton extends Component {
+class FBLoginPage extends Component {
   responseFacebook(response) {
     console.log(response);
   }
@@ -11,10 +11,10 @@ class FBButton extends Component {
   render() {
     return (
       <div className="facebook-login-page">
-        <div class="sub-header">
+        <div className="sub-header">
           <p>Authorize TR!BE Messenger App on your Facebook Page Settings. <br /> It only takes a ming- check the video</p>
         </div>
-        <div className="fb-button">
+        <div className="first-page">
           <FacebookLogin
             appId="217132752218567"
             autoLoad={true}
@@ -31,4 +31,4 @@ class FBButton extends Component {
   }
 }
 
-export default FBButton;
+export default FBLoginPage;

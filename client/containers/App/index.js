@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import { Page } from '@shopify/polaris';
 import { Route, Switch } from "react-router-dom";
 import { EmbeddedApp } from '@shopify/polaris/embedded';
-import LoginPage from './Auth';
+import LoginPage from '../../../client/modules/Auth';
 
 class App extends Component {
   render() {

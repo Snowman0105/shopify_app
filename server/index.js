@@ -7,6 +7,9 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const path = require('path');
 const logger = require('morgan');
+const http = require('http');
+const mysql = require('mysql');
+
 
 const webpack = require('webpack');
 const webpackMiddleware = require('webpack-dev-middleware');
@@ -16,6 +19,10 @@ const config = require('../config/webpack.config.js');
 const ShopifyAPIClient = require('shopify-api-node');
 const ShopifyExpress = require('@shopify/shopify-express');
 const {MemoryStrategy} = require('@shopify/shopify-express/strategies');
+const bodyParser = require('body-parser');
+const routers = require('./routers');
+const dbfunc = require('./config/db-function');
+
 
 const {
   SHOPIFY_APP_KEY,
@@ -124,8 +131,22 @@ app.post('/order-create', withWebhook((error, request) => {
   console.log('Body:', request.body);
 }));
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+dbfunc.connectionCheck.then((data) =>{
+    console.log(data);
+  }).catch((err) => {
+    console.log(err);
+});
+
+app.use('/api', routers);
+
 // Error Handlers
 app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
   const err = new Error('Not Found');
   err.status = 404;
   next(err);

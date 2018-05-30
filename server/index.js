@@ -1,6 +1,8 @@
 require('isomorphic-fetch');
 require('dotenv').config();
+require('./sequelize');
 
+const initPassport = require('./passport');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
@@ -10,6 +12,14 @@ const logger = require('morgan');
 const http = require('http');
 const mysql = require('mysql');
 
+
+const cors = require('cors');
+const glob = require('glob');
+const chalk = require('chalk');
+const consolidate = require('consolidate');
+const passport = require('passport');
+const jwt = require('express-jwt');
+const dbConfig = require('./config');
 
 const webpack = require('webpack');
 const webpackMiddleware = require('webpack-dev-middleware');
@@ -21,8 +31,6 @@ const ShopifyExpress = require('@shopify/shopify-express');
 const {MemoryStrategy} = require('@shopify/shopify-express/strategies');
 const bodyParser = require('body-parser');
 const routers = require('./routers');
-const dbfunc = require('./config/db-function');
-
 
 const {
   SHOPIFY_APP_KEY,
@@ -59,6 +67,8 @@ const registerWebhook = function(shopDomain, accessToken, webhook) {
 }
 
 const app = express();
+app.server = http.createServer(app);
+app.use(logger('combined'));
 const isDevelopment = NODE_ENV !== 'production';
 
 app.set('views', path.join(__dirname, 'views'));
@@ -131,17 +141,36 @@ app.post('/order-create', withWebhook((error, request) => {
   console.log('Body:', request.body);
 }));
 
+glob('./routers/*.js', { cwd: path.resolve('./server') }, (err, routes) => {
+  if (err) {
+    console.log(chalk.red('Error occured including routes'));
+    return;
+  }
+
+  console.log(chalk.green(`included ${routes.length} route files`));
+});
+app.use(cors({
+  exposedHeaders: ['Link']
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(jwt({
+  secret: dbConfig.jwt.secret,
+  credentialsRequired: false,
+  getToken: (req) => {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+      return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.token) {
+      return req.query.token;
+    }
+    return null;
+  }
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-dbfunc.connectionCheck.then((data) =>{
-    console.log(data);
-  }).catch((err) => {
-    console.log(err);
-});
-
 app.use('/api', routers);
-
+initPassport();
 // Error Handlers
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

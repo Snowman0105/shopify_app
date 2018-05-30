@@ -38,7 +38,7 @@ const render = (messages) =>{
 render();
 
 if (module.hot) {
-  module.hot.accept(['../client/i18n', '../client/containers/App'], () => {
+  module.hot.accept(['~/i18n', '~/containers/App'], () => {
     ReactDOM.unmountComponentAtNode(MOUNT_NODE);
     render(translationMessages);
   });

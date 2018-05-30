@@ -1,7 +1,6 @@
 import 'whatwg-fetch';
 import moment from 'moment';
-import { setAPILoading, setGlobalNotification } from 'containers/App/redux/actions';
-import { logout } from 'modules/auth/redux/actions';
+import { setAPILoading, setGlobalNotification } from '~/containers/App/redux/actions';
 import { getStore } from '../configureStore';
 
 /**
@@ -63,7 +62,6 @@ export default function request(url, method = 'GET', body = null, includeToken =
     const exp = currentUser ? moment(currentUser.get('exp'), 'X') : moment().subtract(1, 'day');
     if (moment().diff(exp) > 0) {
       store.dispatch(setGlobalNotification('API Error', 'Token is expired'));
-      store.dispatch(logout());
       return Promise.reject(new Error('Token is expired'));
     }
     headers.Authorization = `Bearer ${token}`;

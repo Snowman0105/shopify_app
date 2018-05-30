@@ -46,6 +46,12 @@ module.exports = {
     publicPath: '/assets/',
     libraryTarget: 'var',
   },
+  resolve: {
+    extensions: ['.js', '.css'],
+    alias: {
+      '~': path.resolve('client')
+    }
+  },
   module: {
     loaders: [
       {

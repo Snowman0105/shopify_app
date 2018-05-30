@@ -1,8 +1,14 @@
 import React, { Component} from 'react';
 import { Page } from '@shopify/polaris';
-import { Route, Switch } from "react-router-dom";
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { createStructuredSelector } from 'reselect';
 import { EmbeddedApp } from '@shopify/polaris/embedded';
-import LoginPage from '../../../client/modules/Auth';
+import saga from './redux/saga';
+// import injectReducer from '../../../client/utils/injectReducer';
+import injectSaga from '~/utils/injectSaga';
+import LoginPage from '~/modules/Auth';
 
 class App extends Component {
   render() {
@@ -17,4 +23,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const withConnect = connect();
+const withSaga = injectSaga({key: 'app', saga});
+
+export default withRouter(compose(
+  withSaga,
+  withConnect,
+)(App));

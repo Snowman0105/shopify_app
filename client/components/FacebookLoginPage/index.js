@@ -1,11 +1,21 @@
-import React, { Component} from 'react'
+import React, { Component} from 'react';
 import { Route, Switch } from "react-router-dom";
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import { Header, Container, Tab, List, Item } from 'semantic-ui-react';
 import FacebookLogin from 'react-facebook-login';
+import { userLoginRequest } from './redux/actions';
 
 class FBLoginPage extends Component {
-  responseFacebook(response) {
-    console.log(response);
+  constructor(props) {
+    super(props);
+
+    this.responseFacebook = this.responseFacebook.bind(this);
+  }
+
+  responseFacebook(fbUserInfo) {
+    this.props.userLoginRequest(fbUserInfo);
   }
 
   render() {
@@ -31,4 +41,13 @@ class FBLoginPage extends Component {
   }
 }
 
-export default FBLoginPage;
+const mapStateToProps = createStructuredSelector({
+});
+
+const mapDispatchToProps = {
+  userLoginRequest,
+};
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+
+export default compose(withConnect)(FBLoginPage);

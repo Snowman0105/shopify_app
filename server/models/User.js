@@ -2,7 +2,12 @@ const md5 = require('md5');
 
 module.exports = function(sequelize, DataTypes) {
   const User = sequelize.define('User', {
-    name: {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    full_name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -12,26 +17,32 @@ module.exports = function(sequelize, DataTypes) {
         }
       }
     },
-    email: {
+    facebook_id: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    password: {
-      type: DataTypes.STRING
+    access_token: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
-    role: DataTypes.STRING(32)
+    reauthorize_required_in: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    expiresIn: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    signed_request: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    industry_type: DataTypes.STRING(32)
   }, {
     classMethods: {
-      encryptPassword: password => md5(password)
-    },
-    instanceMethods: {
-      authenticate(password) {
-        return md5(password) === this.password;
-      },
-      is: type => (this.role === type)
-    },
-    associate: (models) => {
-      User.hasMany(models.Expense, { foreignKey: 'userId' });
+      associate: (models) => {
+        User.hasMany(models.Expense, { foreignKey: 'user_id' });
+      }
     },
     tableName: 'users',
     timestamps: false

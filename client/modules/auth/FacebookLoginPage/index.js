@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { Header, Container, Tab, List, Item } from 'semantic-ui-react';
 import FacebookLogin from 'react-facebook-login';
-import { userLoginRequest } from './redux/actions';
+import { userLoginRequest } from '../redux/actions';
 
 class FBLoginPage extends Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class FBLoginPage extends Component {
         <div className="first-page">
           <FacebookLogin
             appId="217132752218567"
-            autoLoad={true}
+            autoLoad={false}
             size="medium"
             fields="name,email,picture"
             scope="public_profile,user_friends"

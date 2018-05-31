@@ -4,7 +4,6 @@
     "env",
     "es2015",
     "stage-1",
-    "transform-es2015-modules-commonjs",
   ],
   "plugins": [
     "react-hot-loader/babel",
@@ -12,7 +11,6 @@
     "transform-decorators-legacy",
     "transform-class-properties",
     "syntax-dynamic-import",
-    "transform-es2015-modules-commonjs",
     "dynamic-import-node"
   ]
 }

@@ -1,8 +1,31 @@
 import React, { Component} from 'react'
 import { Route, Switch } from "react-router-dom";
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { Header, Dropdown, Container, Tab, List, Item, Button, Icon } from 'semantic-ui-react';
+import { userIndustryRequest } from '../redux/actions';
 
 class IndustryPage extends Component {
+
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      industry: '',
+    };
+  }
+
+  onUpdateDropdown = (field) => (evt, data) => {
+    if (field === 'industry') {
+      this.setState({industry: data.value});
+    }
+  }
+
+  onNext = () => {
+    this.props.userIndustryRequest(this.state.industry);
+  }
+
   render() {
     const industryOptions = [{
       key: 'bottle',
@@ -25,11 +48,12 @@ class IndustryPage extends Component {
             selection
             options={industryOptions}
             className="industry-list"
+            onChange={this.onUpdateDropdown('industry')}
           />
         </div>
         &nbsp;
         <div className="first-page">
-          <Button icon labelPosition='right' color="facebook">
+          <Button icon labelPosition='right' color="facebook" onClick={this.onNext}>
             Next
             <Icon name='right arrow' />
           </Button>
@@ -39,4 +63,14 @@ class IndustryPage extends Component {
   }
 }
 
-export default IndustryPage;
+const mapStateToProps = createStructuredSelector ({
+
+});
+
+const mapDispatchToProps = {
+  userIndustryRequest,
+}
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+
+export default compose(withConnect)(IndustryPage);

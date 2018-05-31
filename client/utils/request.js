@@ -57,9 +57,9 @@ export default function request(url, method = 'GET', body = null, includeToken =
     options.body = JSON.stringify(body);
   }
   if (includeToken) {
-    const currentUser = store.getState().getIn(['auth', 'currentUser']);
-    const token = currentUser && currentUser.get('token');
-    const exp = currentUser ? moment(currentUser.get('exp'), 'X') : moment().subtract(1, 'day');
+    const accessToken = store.getState().get('token').get('userInfo');
+    const token = accessToken && accessToken.get('accessToken');
+    const exp = accessToken ? moment(accessToken.get('exp'), 'X') : moment().subtract(1, 'day');
     if (moment().diff(exp) > 0) {
       store.dispatch(setGlobalNotification('API Error', 'Token is expired'));
       return Promise.reject(new Error('Token is expired'));

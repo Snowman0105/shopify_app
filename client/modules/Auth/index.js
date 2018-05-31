@@ -1,8 +1,8 @@
 import React, { Component} from 'react'
 import { Route, Switch } from "react-router-dom";
 import { Header, Container, Tab, List, Item } from 'semantic-ui-react';
-import FBLoginPage from '../../components/FacebookLoginPage';
-import IndustryPage from '../../components/IndustryPage';
+import FBLoginPage from './FacebookLoginPage';
+import IndustryPage from './IndustryPage';
 class LoginPage extends Component {
   render() {
     const panes = [

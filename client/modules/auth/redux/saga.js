@@ -4,7 +4,9 @@ import history from '~/browserHistory';
 import * as CONSTANTS from './constants';
 import {
   userLoginSuccess,
-  userLoginError
+  userLoginError,
+  userIndustrySuccess,
+  userIndustryError,
 } from './actions';
 
 export function* userLoginRequest(action) {
@@ -19,6 +21,17 @@ export function* userLoginRequest(action) {
   }
 }
 
-export default [
-  fork(takeLatest, CONSTANTS.USER_LOGIN_REQUEST, userLoginRequest),
-];
+export function* userIndustryRequest(action) {
+  try {
+    const industryType = action.data;
+    const data = yield call(request, 'userservices/saveindustry', 'POST', {industryType}, true, true);
+    yield put(userIndustrySuccess(data));
+  } catch (err) {
+    yield put(userIndustryError(err));
+  }
+}
+
+export default function* authSaga() {
+  yield takeLatest(CONSTANTS.USER_LOGIN_REQUEST, userLoginRequest);
+  yield takeLatest(CONSTANTS.USER_INDUSTRY_REQUEST, userIndustryRequest);
+}

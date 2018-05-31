@@ -20,3 +20,24 @@ export function userLoginError(data) {
     ...data,
   }
 }
+
+export function userIndustryRequest(data) {
+  return {
+    type: CONSTANTS.USER_INDUSTRY_REQUEST,
+    data,
+  }
+}
+
+export function userIndustrySuccess(data) {
+  return {
+    type: CONSTANTS.USER_INDUSTRY_SUCCESS,
+    data,
+  }
+}
+
+export function userIndustryError(data) {
+  return {
+    type: CONSTANTS.USER_INDUSTRY_ERROR,
+    ...data,
+  }
+}

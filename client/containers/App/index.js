@@ -5,28 +5,51 @@ import { compose } from 'redux';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { EmbeddedApp } from '@shopify/polaris/embedded';
-import saga from './redux/saga';
-// import injectReducer from '../../../client/utils/injectReducer';
+import injectReducer from '~/utils/injectReducer';
 import injectSaga from '~/utils/injectSaga';
-import LoginPage from '~/modules/Auth';
+import AuthModule from '~/modules/auth';
+import AppModule from '~/modules/app';
+import reducer from '~/modules/auth/redux/reducers';
+import saga from '~/modules/auth/redux/saga';
+import { makeSelectUserToken, makeSelectIndustryType } from '~/modules/auth/redux/selectors';
+import { makeSelectPersistLoaded } from './redux/selectors';
 
-class App extends Component {
+class RootApp extends Component {
+  renderApp = () => {
+    const { accessToken, industryType } = this.props;
+    return accessToken && industryType !== null ? <AppModule/> : <AuthModule/>;
+  }
+
   render() {
     const { apiKey, shopOrigin } = window;
+    const { persistLoaded } = this.props;
+
+    if (!persistLoaded) {
+      return null;
+    }
+
     return (
-      <div className="main-app" style={{display:'flex', height:'100%', justifyContent:'center', alignItems:'center' }}>
         <EmbeddedApp shopOrigin={shopOrigin} apiKey={apiKey}>
-          <LoginPage />
+          <div className="main-app" style={{display:'flex', height:'100%', justifyContent:'center', alignItems:'center' }}>
+            <Route path='/' render={this.renderApp} />
+          </div>
         </EmbeddedApp>
-      </div>
     );
   }
 }
 
-const withConnect = connect();
-const withSaga = injectSaga({key: 'app', saga});
+const mapStateToProps = createStructuredSelector({
+  accessToken: makeSelectUserToken(),
+  industryType: makeSelectIndustryType(),
+  persistLoaded: makeSelectPersistLoaded(),
+})
+
+const withReducer = injectReducer({key: 'token', reducer});
+const withSaga = injectSaga({key: 'token', saga});
+const withConnect = connect(mapStateToProps);
 
 export default withRouter(compose(
+  withReducer,
   withSaga,
   withConnect,
-)(App));
+)(RootApp));

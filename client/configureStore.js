@@ -51,7 +51,7 @@ export default function configureStore(initialState = {}, history) {
     composeEnhancers(...enhancers)
   );
 
-  persistStore(store, { whitelist: ['language', 'auth', 'global'] });
+  persistStore(store, { whitelist: ['language', 'auth', 'global', 'token'] });
 
   // Extensions
   store.runSaga = sagaMiddleware.run;

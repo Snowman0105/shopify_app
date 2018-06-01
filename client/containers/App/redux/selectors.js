@@ -10,9 +10,21 @@ const selectRoute = (state) => state.get('route');
 
 const selectAuth = (state) => state.get('auth');
 
+const selectToken = (state) => state.get('token');
+
 const makeSelectCurrentUser = () => createSelector(
   selectAuth,
   (globalState) => globalState.get('currentUser')
+);
+
+const makeSelectUserAccessToken = () => createSelector(
+  selectToken,
+  (globalState) => globalState.get('userInfo').get('accessToken')
+);
+
+const makeSelectUserIndustryType = () => createSelector(
+  selectToken,
+  (globalState) => globalState.get('userInfo').get('industryType')
 );
 
 const makeSelectLoading = () => createSelector(
@@ -35,9 +47,12 @@ const makeSelectLocation = () => createSelector(
   (routeState) => routeState.get('location').toJS()
 );
 
+
 export {
   selectGlobal,
   makeSelectCurrentUser,
+  makeSelectUserAccessToken,
+  makeSelectUserIndustryType,
   makeSelectLoading,
   makeSelectNotification,
   makeSelectLocation,

@@ -12,11 +12,13 @@ import AppModule from '~/modules/app';
 import reducer from '~/modules/auth/redux/reducers';
 import saga from '~/modules/auth/redux/saga';
 import { makeSelectUserToken, makeSelectIndustryType } from '~/modules/auth/redux/selectors';
-import { makeSelectPersistLoaded } from './redux/selectors';
+import { makeSelectPersistLoaded, makeSelectUserIndustryType, makeSelectUserAccessToken } from './redux/selectors';
 
 class RootApp extends Component {
   renderApp = () => {
     const { accessToken, industryType } = this.props;
+    console.log(accessToken);
+    console.log(industryType);
     return accessToken && industryType !== null ? <AppModule/> : <AuthModule/>;
   }
 
@@ -39,8 +41,8 @@ class RootApp extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  accessToken: makeSelectUserToken(),
-  industryType: makeSelectIndustryType(),
+  accessToken: makeSelectUserAccessToken(),
+  industryType: makeSelectUserIndustryType(),
   persistLoaded: makeSelectPersistLoaded(),
 })
 

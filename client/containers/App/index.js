@@ -19,7 +19,7 @@ class RootApp extends Component {
     const { accessToken, industryType } = this.props;
     console.log(accessToken);
     console.log(industryType);
-    return accessToken && industryType !== null ? <AppModule/> : <AuthModule/>;
+    return accessToken && industryType ? <AppModule/> : <AuthModule/>;
   }
 
   render() {

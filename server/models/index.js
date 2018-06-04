@@ -1,7 +1,7 @@
-const Expense = require('./Expense');
 const User = require('./User');
+const Tag = require('./Tag');
 
 module.exports = {
-  Expense,
-  User
+  User,
+  Tag
 };

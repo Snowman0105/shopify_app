@@ -7,6 +7,6 @@ module.exports = {
     username: 'root'
   },
   jwt: {
-    secret: 'TOPTAL-EXPENSE-TEST'
+    secret: 'shopify-facebook-msg-app'
   }
 };

@@ -7,13 +7,13 @@ import injectSaga from '~/utils/injectSaga';
 import { Container } from 'semantic-ui-react';
 import { createStructuredSelector } from 'reselect';
 
-import Dashboard from './dashboard';
+import MsgTrigger from './triggers/MessagesPage';
 
 class App extends Component {
   Routes() {
     return (
       <Switch>
-        <Route exact path="/" component={Dashboard} />
+        <Route exact path="/" component={MsgTrigger} />
       </Switch>
     )
   }

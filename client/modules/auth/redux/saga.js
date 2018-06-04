@@ -12,8 +12,7 @@ import {
 export function* userLoginRequest(action) {
   try {
     const requestData = action.data;
-    const data = yield call(request, 'userservices/login', 'POST', {requestData});
-    console.log(data);
+    const data = yield call(request, 'userservices/login', 'POST', { ...requestData });
     yield put(userLoginSuccess(data));
     notify.success("login succeess");
   } catch (err) {

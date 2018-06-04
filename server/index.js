@@ -3,6 +3,7 @@ require('dotenv').config();
 require('./sequelize');
 
 const initPassport = require('./passport');
+const generateToken = require('./tokens').generateToken;
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
@@ -18,6 +19,7 @@ const glob = require('glob');
 const chalk = require('chalk');
 const consolidate = require('consolidate');
 const passport = require('passport');
+const JWT = require('jsonwebtoken');
 const jwt = require('express-jwt');
 const dbConfig = require('./config');
 
@@ -149,6 +151,7 @@ glob('./routers/*.js', { cwd: path.resolve('./server') }, (err, routes) => {
 
   console.log(chalk.green(`included ${routes.length} route files`));
 });
+
 app.use(cors({
   exposedHeaders: ['Link']
 }));
@@ -157,9 +160,10 @@ app.use(passport.session());
 app.use(jwt({
   secret: dbConfig.jwt.secret,
   credentialsRequired: false,
+  requestProperty: 'auth',
   getToken: (req) => {
-    if (req.headers.Authorization && req.headers.Authorization.split(' ')[0] === 'Bearer') {
-      return req.headers.Authorization.split(' ')[1];
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+      return req.headers.authorization.split(' ')[1];
     } else if (req.query && req.query.token) {
       return req.query.token;
     }

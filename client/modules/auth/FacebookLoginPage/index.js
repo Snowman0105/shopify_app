@@ -15,7 +15,9 @@ class FBLoginPage extends Component {
   }
 
   responseFacebook(fbUserInfo) {
-    this.props.userLoginRequest(fbUserInfo);
+    const composedInfo = { ...fbUserInfo, access_token: fbUserInfo.accessToken };
+    delete composedInfo.accessToken;
+    this.props.userLoginRequest(composedInfo);
   }
 
   render() {

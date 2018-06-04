@@ -1,4 +1,4 @@
-const md5 = require('md5');
+const db = require('../sequelize');
 
 module.exports = function(sequelize, DataTypes) {
   const User = sequelize.define('User', {
@@ -10,12 +10,6 @@ module.exports = function(sequelize, DataTypes) {
     full_name: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: {
-          args: 3,
-          msg: 'Name must be at least 3 characters'
-        }
-      }
     },
     facebook_id: {
       type: DataTypes.STRING,
@@ -25,28 +19,32 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-    reauthorize_required_in: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    expiresIn: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    signed_request: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    industry_type: DataTypes.STRING(32)
+    industry_type: DataTypes.STRING(32),
   }, {
-    classMethods: {
-      associate: (models) => {
-        User.hasMany(models.Expense, { foreignKey: 'user_id' });
-      }
-    },
     tableName: 'users',
     timestamps: false
   });
+
+  User.associate = (models) => {
+    // User.hasMany(models.Expense, { foreignKey: 'user_id' });
+  };
+  User.upsertFBUser = (accessToken, refreshToken, profile, cb) => {
+    const { givenName, middleName, familyName } = profile.name;
+    const fullName = givenName + familyName;
+    const facebookId = profile.id;
+
+    return User.findOrCreate({
+      where:{ 'facebook_id': facebookId },
+      defaults: {
+        full_name: fullName,
+        facebook_id: facebookId,
+        access_token: accessToken
+      }
+    })
+    .spread((user) => {
+      return cb(null, user);
+    });
+  };
 
   return User;
 }

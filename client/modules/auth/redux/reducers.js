@@ -19,6 +19,12 @@ function authReducer(state = initalState, action) {
       }));
     case CONSTANTS.USER_LOGIN_ERROR:
       return state.set('error', fromJS(action.data.error));
+    case CONSTANTS.USER_INDUSTRY_SUCCESS:
+      return state.set('userInfo', fromJS({
+        industryType: action.data.industryType,
+      }));
+    case CONSTANTS.USER_INDUSTRY_ERROR:
+      return state.set('error', fromJS(action.data.error));
     default:
   }
   return state;

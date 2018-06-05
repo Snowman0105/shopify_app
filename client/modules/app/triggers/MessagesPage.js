@@ -17,6 +17,8 @@ import {
 } from 'semantic-ui-react';
 import AllMessagesPage from './AllMessagesPage';
 import { FroalaEditor } from 'react-froala-wysiwyg';
+import { getDragAndDropTagsRequest } from './redux/actions';
+import { makeSelectTagList } from './redux/selectors';
 
 class MessagesPage extends Component {
   constructor(...args) {
@@ -27,6 +29,10 @@ class MessagesPage extends Component {
     };
   }
 
+  componentWillMount() {
+    this.props.getDragAndDropTagsRequest();
+  }
+
   onShowModal = () => {
     this.setState({ showModal: true });
   }
@@ -35,8 +41,22 @@ class MessagesPage extends Component {
     this.setState({ showModal: false });
   }
 
+  dragStart = (event) => {
+    event.dataTransfer.setData('Text', event.target.innerHTML);
+  }
+
+  dragDropTagsButton = (tagLists) => {
+    return tagLists.map((tag) => (
+      <Button key={tag.get('id')} draggable='true' basic color='black' className="tag-button" onDragStart={this.dragStart}>
+        {tag.get('tag_name')}
+      </Button>
+    ));
+  }
+
   renderTriggerModal = () => {
     const { showModal } = this.state;
+    const { tags } = this.props;
+
     const style = {
       'background': '#efefef',
       'border': 'none',
@@ -44,6 +64,8 @@ class MessagesPage extends Component {
       'width': '50%',
       'height': '60px',
       'color': 'black',
+      'marginTop': '30px',
+      'marginBottom': '30px'
     };
 
     return (
@@ -59,13 +81,14 @@ class MessagesPage extends Component {
                 <Header as='h4' className="message-header-content-second">Preview and customize the triggered message below</Header>
               </Grid.Column>
               <Grid.Column width={16} className="message-div-second">
-                <div className="message-input-field">
-                  <TextArea className="message-content" autoHeight style={style} placeholder='Edit message template' />
-                </div>
+                <TextArea className="message-content" autoHeight style={style} placeholder='Edit message template' />
               </Grid.Column>
             </Grid.Row>
           </Grid>
-          <Header as='h6'>Add More TAGS(DRAG AND DROP TO YOUR MESSAGE)</Header>
+          <Header as='h6'>ADD MORE TAGS(DRAG AND DROP TO YOUR MESSAGE)</Header>
+          { showModal &&
+            this.dragDropTagsButton(tags)
+          }
         </Modal.Content>
         <Modal.Actions>
           <Button basic color='black' onClick={this.onClose} > Cancel </Button>
@@ -94,10 +117,12 @@ class MessagesPage extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-
+  tags: makeSelectTagList(),
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  getDragAndDropTagsRequest,
+};
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 

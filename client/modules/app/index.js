@@ -6,7 +6,8 @@ import injectReducer from '~/utils/injectReducer';
 import injectSaga from '~/utils/injectSaga';
 import { Container } from 'semantic-ui-react';
 import { createStructuredSelector } from 'reselect';
-
+import reducer from './redux/reducers';
+import saga from './redux/saga';
 import MsgTrigger from './triggers/MessagesPage';
 
 class App extends Component {
@@ -28,5 +29,14 @@ class App extends Component {
     );
   }
 }
+const mapStateToProps = createStructuredSelector({});
 
-export default App;
+const withConnect = connect(mapStateToProps);
+const withReducer = injectReducer({ key: 'app', reducer });
+const withSaga = injectSaga({ key: 'app', saga });
+
+export default withRouter(compose(
+    withReducer,
+    withSaga,
+    withConnect,
+)(App));

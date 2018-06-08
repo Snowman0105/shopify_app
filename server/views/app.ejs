@@ -145,5 +145,44 @@
     textarea.message-content {
       padding: 16px !important;
     }
+    .messages{
+      background: #efefef;
+      border-radius: 8px;
+      border: none;
+      display: block;
+      width: 50%;
+      height: 100px;
+      overflow: auto;
+      overflow-x: hidden;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      color: black;
+      padding: 16px;
+    }
+
+    .messages:empty:before{
+      content: attr(placeholder);
+      display: block;
+      color: #656262;
+    }
+
+    .dotted {
+      border-bottom: 1px dashed #999;
+      text-decoration: none;
+      color: #656262;
+    }
+
+    .ui.labeled.input.trigger-name {
+      margin-bottom: 5%;
+      width: 100%;
+    }
+    .ui.labeled.input.message-schedule {
+      margin-bottom: 5%;
+      width: 100%;
+    }
+    p.sub-message-header {
+      font-size: 16px;
+      padding-top: 3%;
+    }
   </style>
 </html>

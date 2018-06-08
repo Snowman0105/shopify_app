@@ -26,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
   });
 
   User.associate = (models) => {
-    // User.hasMany(models.Expense, { foreignKey: 'user_id' });
+    User.hasMany(models.Message, { foreignKey: 'user_id' });
   };
   User.upsertFBUser = (accessToken, refreshToken, profile, cb) => {
     const { givenName, middleName, familyName } = profile.name;

@@ -17,8 +17,6 @@ import { makeSelectPersistLoaded, makeSelectUserIndustryType, makeSelectUserAcce
 class RootApp extends Component {
   renderApp = () => {
     const { accessToken, industryType } = this.props;
-    console.log(accessToken);
-    console.log(industryType);
     return accessToken && industryType ? <AppModule/> : <AuthModule/>;
   }
 

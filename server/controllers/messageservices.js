@@ -2,10 +2,9 @@ const db = require('../sequelize');
 
 exports.create = (req, res) => {
   const userId = req.auth.id;
-  const requestData = req.body.requestData;
-  const triggerName = requestData.triggerName;
-  const messageSchedule = requestData.messageSchedule;
-  const msgTemplate = requestData.msgTemplate;
+  const triggerName = req.body.triggerName;
+  const messageSchedule = req.body.messageSchedule;
+  const msgTemplate = req.body.msgTemplate;
 
   db.Message.create({
     user_id: userId,

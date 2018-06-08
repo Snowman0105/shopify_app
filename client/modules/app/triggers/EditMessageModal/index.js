@@ -63,7 +63,6 @@ class EditmessageModal extends Component {
 
   onSave = () => {
     const { msgId, triggerName, messageSchedule, msgTemplate } = this.state;
-    console.log("================hahaha==============", this.state);
     this.props.messageSaveRequest( msgId, triggerName, messageSchedule, msgTemplate );
     this.props.onClose();
   }

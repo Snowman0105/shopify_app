@@ -12,6 +12,11 @@ import {
   allTriggerMessagesError,
   msgLoadSuccess,
   msgLoadError,
+  makeSaveNotificaitonStatusRequest,
+  makeSaveNotificaitonStatusSuccess,
+  makeSaveNotificaitonStatusError,
+  deleteMsgSuccess,
+  deleteMsgError,
 } from './actions';
 
 export function* getDragAndDropTagsRequest() {
@@ -59,9 +64,30 @@ export function* messageLoadRequest(action) {
   }
 }
 
+export function* makeSaveNotificaitonStatus(action) {
+  try {
+    const data = yield call(request, `messageservices/msgnotification/id/${action.msgId}`, 'PUT', action, true, true );
+    yield put(makeSaveNotificaitonStatusSuccess(data));
+  } catch (err) {
+    yield put(makeSaveNotificaitonStatusError(err));
+  }
+}
+
+export function* deleteMessageReqeust(action) {
+  try {
+    const data = yield call(request, `messageservices/deletemsg/id/${action.msgId}`, 'DELETE', null, true, true);
+    yield put(allTriggerMessagesRequest());
+    yield put(deleteMsgSuccess(data));
+  } catch (err) {
+    yield put(deleteMsgError(err));
+  }
+}
+
 export default [
   fork(takeLatest, CONSTANTS.DRAG_DROP_TAGS_LIST_REQUEST, getDragAndDropTagsRequest),
   fork(takeLatest, CONSTANTS.TRIGGER_MESSAGE_SAVE_REQUEST, messageSaveRequest),
   fork(takeLatest, CONSTANTS.TRIGGER_ALL_MESSAGE_REQUEST, allTriggerMessageListRequest),
   fork(takeLatest, CONSTANTS.MESSAGE_LOAD_REQUEST, messageLoadRequest),
+  fork(takeLatest, CONSTANTS.MESSAGE_NOTIFICATION_STATUS_REQUEST, makeSaveNotificaitonStatus),
+  fork(takeLatest, CONSTANTS.MESSAGE_DELETE_REQUEST, deleteMessageReqeust),
 ];

@@ -94,3 +94,46 @@ export function msgLoadError(data) {
     data,
   };
 }
+
+export function makeSaveNotificaitonStatusRequest(msgId, status) {
+  return {
+    type: CONSTANTS.MESSAGE_NOTIFICATION_STATUS_REQUEST,
+    msgId,
+    status,
+  };
+}
+
+export function makeSaveNotificaitonStatusSuccess(data) {
+  return {
+    type: CONSTANTS.MESSAGE_NOTIFICATION_STATUS_SUCCESS,
+    data,
+  }
+}
+
+export function makeSaveNotificaitonStatusError(data) {
+  return {
+    type: CONSTANTS.MESSAGE_NOTIFICATION_STATUS_ERROR,
+    data,
+  }
+}
+
+export function deleteMsgRequest(msgId) {
+  return {
+    type: CONSTANTS.MESSAGE_DELETE_REQUEST,
+    msgId,
+  }
+}
+
+export function deleteMsgSuccess(data) {
+  return {
+    type: CONSTANTS.MESSAGE_DELETE_SUCCESS,
+    data,
+  }
+}
+
+export function deleteMsgError(data) {
+  return {
+    type: CONSTANTS.MESSAGE_DELETE_ERROR,
+    data,
+  }
+}

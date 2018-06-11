@@ -8,10 +8,19 @@ import {
   Confirm, Radio, Input, Tab, List, Grid, Item, Checkbox
 } from 'semantic-ui-react';
 import { makeSelectMsgList } from '../redux/selectors';
+import { makeSaveNotificaitonStatusRequest, deleteMsgRequest } from '../redux/actions';
 
 class AllMessagesPage extends Component {
   constructor(props) {
     super(props);
+  }
+
+  notificationSwitch = (msgId) => (event, data) => {
+    this.props.makeSaveNotificaitonStatus(msgId, data.checked);
+  }
+
+  onDelete = (msgId) => () => {
+    this.props.deleteMsgRequest(msgId);
   }
 
   renderMessages = () => {
@@ -32,7 +41,10 @@ class AllMessagesPage extends Component {
     const rows = msgs.map((msg) => (
       <Table.Row key={msg.get('id')}>
         <Table.Cell>
-          <Checkbox toggle />
+          { msg.get('msg_notification') == true
+            ? <Checkbox onChange={this.notificationSwitch(msg.get('id'))} checked toggle />
+            : <Checkbox onChange={this.notificationSwitch(msg.get('id'))} toggle />
+          }
         </Table.Cell>
         <Table.Cell>
           <Link to='#' onClick={this.props.onShowModal(msg.get('id'))}>
@@ -47,6 +59,9 @@ class AllMessagesPage extends Component {
         </Table.Cell>
         <Table.Cell>
           0
+        </Table.Cell>
+        <Table.Cell>
+          <Button icon='delete' color='red' onClick={this.onDelete(msg.get('id'))}></Button>
         </Table.Cell>
       </Table.Row>
     ));
@@ -68,6 +83,7 @@ class AllMessagesPage extends Component {
             <Table.HeaderCell>Message schedule</Table.HeaderCell>
             <Table.HeaderCell>Time run</Table.HeaderCell>
             <Table.HeaderCell>In queue</Table.HeaderCell>
+            <Table.HeaderCell>Delete</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         {this.renderMessages()}
@@ -83,6 +99,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = {
+  makeSaveNotificaitonStatus: makeSaveNotificaitonStatusRequest,
+  deleteMsgRequest,
 };
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

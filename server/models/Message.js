@@ -18,6 +18,7 @@ module.exports = function (sequelize, DataTypes) {
     message_content: DataTypes.TEXT,
     trigger_name: DataTypes.TEXT,
     message_schedule: DataTypes.TEXT,
+    msg_notification: DataTypes.BOOLEAN,
   }, {
     tableName: 'messages',
     timestamps: false

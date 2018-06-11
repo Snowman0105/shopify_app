@@ -11,6 +11,7 @@ exports.create = (req, res) => {
     trigger_name: triggerName,
     message_schedule: messageSchedule,
     message_content: msgTemplate,
+    msg_notification: 0,
   })
   .then(() => {
     db.Message.findOne({
@@ -35,6 +36,7 @@ exports.getAll = (req, res) => {
     res.json(msgs);
   })
   .catch((err) => {
+    console.log(err);
     res.status(404).send({error: err});
   })
 }
@@ -73,5 +75,43 @@ exports.updateMessage = (req, res) => {
   })
   .catch((err) => {
     res.status(404).send({error: err});
+  })
+}
+
+exports.updateMessageStates = (req, res) => {
+  const msgId = req.params.id;
+
+  db.Message.update({
+    msg_notification: req.body.status,
+  }, {
+    where: {id: msgId}
+  })
+  .then((result) => {
+    if (!result) {
+      res.status(404).send({error: 'Not find user'});
+    }
+    res.json({status: 'success'});
+  })
+  .catch((err) => {
+    res.status(404).send({error: err});
+  })
+}
+
+exports.deleteMessage = (req, res) => {
+  const msgId = req.params.id;
+  console.log(msgId);
+  if (!msgId) {
+    res.status(404).send({error: 'Missing Parameter'});
+  }
+
+  db.Message.destroy({
+    where: {id: msgId}
+  })
+  .then(() => {
+    res.json({status: 'success'});
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(404).send(err);
   })
 }

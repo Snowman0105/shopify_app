@@ -38,7 +38,6 @@ exports.getAll = (req, res) => {
     res.json(msgs);
   })
   .catch((err) => {
-    console.log(err);
     res.status(404).send({error: err});
   })
 }
@@ -101,7 +100,7 @@ exports.updateMessageStates = (req, res) => {
 
 exports.deleteMessage = (req, res) => {
   const msgId = req.params.id;
-  console.log(msgId);
+
   if (!msgId) {
     res.status(404).send({error: 'Missing Parameter'});
   }
@@ -113,7 +112,6 @@ exports.deleteMessage = (req, res) => {
     res.json({status: 'success'});
   })
   .catch((err) => {
-    console.log(err);
     res.status(404).send(err);
   })
 }

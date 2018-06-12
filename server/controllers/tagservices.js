@@ -9,7 +9,6 @@ exports.getAllTags = (req, res) => {
     res.json(tags);
   })
   .catch((err) => {
-    console.log(err);
     res.status(404).send(err);
   })
 }

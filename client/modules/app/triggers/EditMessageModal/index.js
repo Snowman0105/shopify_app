@@ -24,6 +24,8 @@ class EditmessageModal extends Component {
       triggerName: '',
       messageSchedule: '',
       msgTemplate: msgTemplate,
+      triggerNameError: false,
+      scheduleError: false,
     }
   }
 
@@ -63,8 +65,16 @@ class EditmessageModal extends Component {
 
   onSave = () => {
     const { msgId, triggerName, messageSchedule, msgTemplate } = this.state;
-    this.props.messageSaveRequest( msgId, triggerName, messageSchedule, msgTemplate );
-    this.props.onClose();
+    if (!triggerName) {
+      this.setState({ triggerNameError: true });
+    }
+    if (!messageSchedule) {
+      this.setState({ scheduleError: true });
+    }
+    if (triggerName && messageSchedule) {
+      this.props.messageSaveRequest( msgId, triggerName, messageSchedule, msgTemplate );
+      this.props.onClose();
+    }
   }
 
   onEditMessageTemplate = (event) => {
@@ -92,6 +102,7 @@ class EditmessageModal extends Component {
                 className="trigger-name"
                 label='Trigger Name'
                 required
+                error={this.state.triggerNameError}
                 placeholder='Input trigger name...'
                 value={msg.get('trigger_name') || this.state.triggerName}
                 onChange={this.onInputField('triggerName')}
@@ -100,6 +111,7 @@ class EditmessageModal extends Component {
                 className="message-schedule"
                 label='Message schedule'
                 required
+                error={this.state.scheduleError}
                 placeholder='Input message schedule...'
                 value={msg.get('message_schedule') || this.state.messageSchedule}
                 onChange={this.onInputField('messageSchedule')}

@@ -17,6 +17,8 @@ import {
   makeSaveNotificaitonStatusError,
   deleteMsgSuccess,
   deleteMsgError,
+  getFacebookTagsSuccess,
+  getFacebookTagsError,
 } from './actions';
 
 export function* getDragAndDropTagsRequest() {
@@ -83,6 +85,15 @@ export function* deleteMessageReqeust(action) {
   }
 }
 
+export function* getFacebookTagsRequest() {
+  try {
+    const data = yield call(request, `fbtagservices/all`, 'GET', null, true, true)
+    yield put(getFacebookTagsSuccess(data));
+  } catch (err) {
+    yield put(getFacebookTagsError(err));
+  }
+}
+
 export default [
   fork(takeLatest, CONSTANTS.DRAG_DROP_TAGS_LIST_REQUEST, getDragAndDropTagsRequest),
   fork(takeLatest, CONSTANTS.TRIGGER_MESSAGE_SAVE_REQUEST, messageSaveRequest),
@@ -90,4 +101,5 @@ export default [
   fork(takeLatest, CONSTANTS.MESSAGE_LOAD_REQUEST, messageLoadRequest),
   fork(takeLatest, CONSTANTS.MESSAGE_NOTIFICATION_STATUS_REQUEST, makeSaveNotificaitonStatus),
   fork(takeLatest, CONSTANTS.MESSAGE_DELETE_REQUEST, deleteMessageReqeust),
+  fork(takeLatest, CONSTANTS.FACEBOOK_MSG_TAGS_REQUEST, getFacebookTagsRequest),
 ];

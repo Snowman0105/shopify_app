@@ -5,6 +5,7 @@ exports.create = (req, res) => {
   const triggerName = req.body.triggerName;
   const messageSchedule = req.body.messageSchedule;
   const msgTemplate = req.body.msgTemplate;
+  const category_id = req.body.category;
 
   db.Message.create({
     user_id: userId,
@@ -12,6 +13,7 @@ exports.create = (req, res) => {
     message_schedule: messageSchedule,
     message_content: msgTemplate,
     msg_notification: 0,
+    category_id: category_id,
   })
   .then(() => {
     db.Message.findOne({

@@ -19,6 +19,14 @@ module.exports = function (sequelize, DataTypes) {
     trigger_name: DataTypes.TEXT,
     message_schedule: DataTypes.TEXT,
     msg_notification: DataTypes.BOOLEAN,
+    category_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: db.FBTag,
+        key: 'id',
+        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
+      }
+    },
   }, {
     tableName: 'messages',
     timestamps: false
@@ -26,6 +34,7 @@ module.exports = function (sequelize, DataTypes) {
 
   Message.associate = (models) => {
     Message.hasMany(models.User, {foreignKey: 'id'});
+    Message.hasOne(models.FBTag, {foreignKey: 'id'});
   };
 
   return Message;

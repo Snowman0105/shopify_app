@@ -13,9 +13,10 @@ import EditMessageModal from './EditMessageModal';
 import {
   allTriggerMessagesRequest,
   getDragAndDropTagsRequest,
-  messageSaveRequest
+  messageSaveRequest,
+  getFacebookTagsRequest,
 } from './redux/actions';
-import { makeSelectTagList, makeSelectMsgListLoading } from './redux/selectors';
+import { makeSelectTagList, makeSelectMsgListLoading, makeSelectFBMsgTagList } from './redux/selectors';
 
 class MessagesPage extends Component {
   constructor(...args) {
@@ -32,6 +33,7 @@ class MessagesPage extends Component {
   componentWillMount() {
     this.props.allTriggerMessagesRequest();
     this.props.getDragAndDropTagsRequest();
+    this.props.getFacebookTagsRequest();
   }
 
   onShowModal = (id) => () => {
@@ -77,6 +79,7 @@ class MessagesPage extends Component {
             msgId={this.state.msgId}
             msgTemplate = {this.state.msgTemplate}
             tags={this.props.tags}
+            categories = {this.props.categories}
             onClose={this.onClose}
           />
         }
@@ -88,12 +91,14 @@ class MessagesPage extends Component {
 const mapStateToProps = createStructuredSelector({
   tags: makeSelectTagList(),
   loading: makeSelectMsgListLoading(),
+  categories: makeSelectFBMsgTagList(),
 });
 
 const mapDispatchToProps = {
   allTriggerMessagesRequest,
   getDragAndDropTagsRequest,
   messageSaveRequest,
+  getFacebookTagsRequest,
 };
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

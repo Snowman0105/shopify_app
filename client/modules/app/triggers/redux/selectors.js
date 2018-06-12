@@ -26,6 +26,11 @@ const makeSelectMsgLoading = () => createSelector(
   (msgState) => msgState.getIn(['message', 'loading']),
 )
 
+const makeSelectFBMsgTagList = () => createSelector(
+  selectTrigger,
+  (tagState) => tagState.getIn(['categories', 'fbmsgtags']),
+);
+
 export {
   selectTrigger,
   makeSelectTagList,
@@ -33,4 +38,5 @@ export {
   makeSelectMsgListLoading,
   makeSelectMsg,
   makeSelectMsgLoading,
+  makeSelectFBMsgTagList,
 };

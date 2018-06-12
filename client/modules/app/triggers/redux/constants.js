@@ -23,3 +23,7 @@ export const MESSAGE_NOTIFICATION_STATUS_ERROR = 'message/notification/error';
 export const MESSAGE_DELETE_REQUEST = 'message/delete/request';
 export const MESSAGE_DELETE_SUCCESS = 'message/delete/success';
 export const MESSAGE_DELETE_ERROR = 'message/delete/error';
+
+export const FACEBOOK_MSG_TAGS_REQUEST = 'facebook/message/tags/request';
+export const FACEBOOK_MSG_TAGS_SUCCESS = 'facebook/message/tags/success';
+export const FACEBOOK_MSG_TAGS_ERROR = 'facebook/message/tags/error';

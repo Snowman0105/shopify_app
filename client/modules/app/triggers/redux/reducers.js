@@ -21,6 +21,10 @@ const initialState = fromJS({
     data: {},
     error: [],
     loading: false,
+  },
+  categories: {
+    fbmsgtags: [],
+    error: '',
   }
 });
 
@@ -52,6 +56,10 @@ function tagReducer(state = initialState, action) {
                   .setIn(['message', 'loading'], false);
     case CONSTANTS.MESSAGE_LOAD_ERROR:
       return state.setIn(['message', 'loading'], false);
+    case CONSTANTS.FACEBOOK_MSG_TAGS_SUCCESS:
+      return state.setIn(['categories', 'fbmsgtags'], fromJS(action.data));
+    case CONSTANTS.FACEBOOK_MSG_TAGS_ERROR:
+      return state.setIn(['categories', 'error'] , fromJS(action.data.error));
   }
 
   return state;

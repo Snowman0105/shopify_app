@@ -40,12 +40,13 @@ export function allTriggerMessagesError(data) {
   }
 }
 
-export function messageSaveRequest(msgId, triggerName, messageSchedule, msgTemplate) {
+export function messageSaveRequest(msgId, triggerName, messageSchedule, msgTemplate, category) {
   const requestData = {
     msgId,
     triggerName,
     messageSchedule,
-    msgTemplate
+    msgTemplate,
+    category,
   };
 
   return {
@@ -135,5 +136,25 @@ export function deleteMsgError(data) {
   return {
     type: CONSTANTS.MESSAGE_DELETE_ERROR,
     data,
+  }
+}
+
+export function getFacebookTagsRequest() {
+  return {
+    type: CONSTANTS.FACEBOOK_MSG_TAGS_REQUEST,
+  }
+}
+
+export function getFacebookTagsSuccess(data) {
+  return {
+    type: CONSTANTS.FACEBOOK_MSG_TAGS_SUCCESS,
+    data,
+  }
+}
+
+export function getFacebookTagsError(error) {
+  return {
+    type: CONSTANTS.FACEBOOK_MSG_TAGS_ERROR,
+    error,
   }
 }

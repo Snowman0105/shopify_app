@@ -32,14 +32,20 @@ export function* getDragAndDropTagsRequest() {
 
 export function* messageSaveRequest(action) {
   let responseData = null;
-  let id = action.requestData.msgId;
-  let requestData = action.requestData;
+  const id = action.requestData.msgId;
+  const requestData = action.requestData;
   try {
     if (id === 'new') {
       responseData = yield call(request, 'messageservices/create', 'POST', { ...requestData }, true, true);
     } else {
-      let messageContent = requestData.msgTemplate;
-      responseData = yield call(request, `messageservices/update/id/${id}`, 'PUT', { messageContent }, true, true);
+      const messageContent = requestData.msgTemplate;
+      const categoryId = requestData.category;
+      const requestBody = {
+        messageContent: messageContent,
+        categoryId: categoryId,
+      };
+      responseData = yield call(request, `messageservices/update/id/${id}`, 'PUT', { ...requestBody }, true, true);
+      console.log(responseData);
     }
     yield put(allTriggerMessagesRequest());
     yield put(messageSaveSuccess(responseData));

@@ -22,20 +22,24 @@ module.exports = function (sequelize, DataTypes) {
     category_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: db.FBTag,
+        model: db.FacebookTag,
         key: 'id',
         deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
       }
     },
   }, {
+    associate: (models) => {
+      Message.belongsTo(models.User, { foreignKey: 'user_id' });
+      Message.belongsTo(models.FacebookTag, { foreignKey: 'category_id' });
+    },
     tableName: 'messages',
     timestamps: false
   });
 
-  Message.associate = (models) => {
-    Message.hasMany(models.User, {foreignKey: 'id'});
-    Message.hasOne(models.FBTag, {foreignKey: 'id'});
-  };
+  // Message.associate = (models) => {
+  //   Message.belongsTo(models.User, { foreignKey: 'user_id' });
+  //   Message.belongsTo(models.FacebookTag, { foreignKey: 'category_id' });
+  // };
 
   return Message;
 }

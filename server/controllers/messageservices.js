@@ -5,7 +5,9 @@ exports.create = (req, res) => {
   const triggerName = req.body.triggerName;
   const messageSchedule = req.body.messageSchedule;
   const msgTemplate = req.body.msgTemplate;
-  const category_id = req.body.category;
+  const categoryId = req.body.category;
+
+  console.log(categoryId);
 
   db.Message.create({
     user_id: userId,
@@ -13,7 +15,7 @@ exports.create = (req, res) => {
     message_schedule: messageSchedule,
     message_content: msgTemplate,
     msg_notification: 0,
-    category_id: category_id,
+    category_id: categoryId,
   })
   .then(() => {
     db.Message.findOne({
@@ -32,7 +34,11 @@ exports.getAll = (req, res) => {
   const userId = req.auth.id;
 
   db.Message.findAll({
-    where: {user_id: userId}
+    where: {user_id: userId},
+    include:[{
+      model: db.User,
+      attributes:['id']
+    }]
   })
   .then((msgs) => {
     res.json(msgs);
@@ -46,7 +52,11 @@ exports.getMessage = (req, res) => {
   const msgId = req.params.id;
 
   db.Message.findOne({
-    where: { id: msgId }
+    where: { id: msgId },
+    include: [{
+      model: db.FacebookTag,
+      attributes: ['id']
+    }]
   })
   .then((message) => {
     if (!message) {
@@ -55,6 +65,7 @@ exports.getMessage = (req, res) => {
     res.json(message);
   })
   .catch((err) => {
+    console.log(err);
     res.status(404).send({error: err});
   })
 }
@@ -62,9 +73,11 @@ exports.getMessage = (req, res) => {
 exports.updateMessage = (req, res) => {
   const msgId = req.params.id;
   const messageContent = req.body.messageContent;
+  const categoryId = req.body.categoryId;
 
   db.Message.update({
     message_content: messageContent,
+    category_id: categoryId
   }, {
     where: {id: msgId}
   })

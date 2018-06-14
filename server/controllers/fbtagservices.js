@@ -2,7 +2,7 @@ const db = require('../sequelize');
 
 exports.getAll = (req, res) => {
 
-  db.FBTag.findAll()
+  db.FacebookTag.findAll()
   .then((fbTags) => {
     res.json(fbTags);
   })

@@ -14,13 +14,16 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
     }
   }, {
-      classMethods: {
-        associate: (models) => {
-        }
-      },
-      tableName: 'fbmessagetags',
-      timestamps: false
-    });
+    associate: (models) => {
+      FacebookTag.hasMany(models.Message, { foreignKey: 'category_id'});
+    },
+    tableName: 'fbmessagetags',
+    timestamps: false
+  });
+
+  // FacebookTag.associate = (models) => {
+  //   FacebookTag.hasMany(models.Message, { foreignKey: 'category_id'});
+  // };
 
   return FacebookTag;
 }

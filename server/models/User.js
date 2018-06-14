@@ -21,13 +21,16 @@ module.exports = function(sequelize, DataTypes) {
     },
     industry_type: DataTypes.STRING(32),
   }, {
+    associate: (models) => {
+      User.hasMany(models.Message, { foreignKey: 'user_id' });
+    },
     tableName: 'users',
     timestamps: false
   });
 
-  User.associate = (models) => {
-    User.hasMany(models.Message, { foreignKey: 'user_id' });
-  };
+  // User.associate = (models) => {
+  //   User.hasMany(models.Message, { foreignKey: 'user_id' });
+  // };
   User.upsertFBUser = (accessToken, refreshToken, profile, cb) => {
     const { givenName, middleName, familyName } = profile.name;
     const fullName = givenName + familyName;

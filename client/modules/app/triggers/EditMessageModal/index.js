@@ -64,12 +64,13 @@ class EditmessageModal extends Component {
   }
 
   dragStart = (event) => {
-    let tagName = '<b class="dotted">' + event.target.innerHTML +'</b>';
+    let tagName = '{{' + event.target.innerHTML +'}}';
     event.dataTransfer.setData('text/html', tagName);
   }
 
   onSave = () => {
     const { msgId, triggerName, messageSchedule, msgTemplate, category } = this.state;
+    console.log(msgId);
     if (!triggerName) {
       this.setState({ triggerNameError: true });
     }
@@ -79,7 +80,10 @@ class EditmessageModal extends Component {
     if (!category) {
       this.setState({ categoryError: true });
     }
-    if (triggerName && messageSchedule && category) {
+    if (msgId == 'new' && triggerName && messageSchedule && category) {
+      this.props.messageSaveRequest( msgId, triggerName, messageSchedule, msgTemplate, category );
+      this.props.onClose();
+    } else if (msgId != 'new') {
       this.props.messageSaveRequest( msgId, triggerName, messageSchedule, msgTemplate, category );
       this.props.onClose();
     }
@@ -164,7 +168,7 @@ class EditmessageModal extends Component {
           { showModal &&
             this.dragDropTagsButton(tags)
           }
-          <Dropdown placeholder="select one of categories..." fluid selection options={categoryList} onChange={this.onSelectCategory('category')} error={this.state.categoryError} ></Dropdown>
+          <Dropdown placeholder="select one of categories..." fluid selection options={categoryList} value={msg.get('category_id')} onChange={this.onSelectCategory('category')} error={this.state.categoryError} ></Dropdown>
         </Modal.Content>
         <Modal.Actions>
           <Button basic color='black' onClick={this.props.onClose} > Cancel </Button>

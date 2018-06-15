@@ -13,7 +13,6 @@ const logger = require('morgan');
 const http = require('http');
 const mysql = require('mysql');
 
-
 const cors = require('cors');
 const glob = require('glob');
 const chalk = require('chalk');
@@ -29,8 +28,9 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('../config/webpack.config.js');
 
 const ShopifyAPIClient = require('shopify-api-node');
+const crypto = require('crypto');
 const ShopifyExpress = require('@shopify/shopify-express');
-const {MemoryStrategy} = require('@shopify/shopify-express/strategies');
+const { MemoryStrategy } = require('@shopify/shopify-express/strategies');
 const bodyParser = require('body-parser');
 const routers = require('./routers');
 
@@ -38,7 +38,7 @@ const {
   SHOPIFY_APP_KEY,
   SHOPIFY_APP_HOST,
   SHOPIFY_APP_SECRET,
-  NODE_ENV,
+  NODE_ENV
 } = process.env;
 
 const shopifyConfig = {
@@ -48,7 +48,9 @@ const shopifyConfig = {
   scope: ['write_orders, write_products'],
   shopStore: new MemoryStrategy(),
   afterAuth(request, response) {
-    const { session: { accessToken, shop } } = request;
+    const {
+      session: { accessToken, shop }
+    } = request;
 
     registerWebhook(shop, accessToken, {
       topic: 'orders/create',
@@ -57,16 +59,26 @@ const shopifyConfig = {
     });
 
     return response.redirect('/');
-  },
+  }
 };
 
 const registerWebhook = function(shopDomain, accessToken, webhook) {
-  const shopify = new ShopifyAPIClient({ shopName: shopDomain, accessToken: accessToken });
-  shopify.webhook.create(webhook).then(
-    response => console.log(`webhook '${webhook.topic}' created`),
-    err => console.log(`Error creating webhook '${webhook.topic}'. ${JSON.stringify(err.response.body)}`)
-  );
-}
+  const shopify = new ShopifyAPIClient({
+    shopName: shopDomain,
+    accessToken: accessToken
+  });
+  shopify.webhook
+    .create(webhook)
+    .then(
+      response => console.log(`webhook '${webhook.topic}' created`),
+      err =>
+        console.log(
+          `Error creating webhook '${webhook.topic}'. ${JSON.stringify(
+            err.response.body
+          )}`
+        )
+    );
+};
 
 const app = express();
 app.server = http.createServer(app);
@@ -81,7 +93,7 @@ app.use(
     store: isDevelopment ? undefined : new RedisStore(),
     secret: SHOPIFY_APP_SECRET,
     resave: true,
-    saveUninitialized: false,
+    saveUninitialized: false
   })
 );
 
@@ -99,8 +111,8 @@ if (isDevelopment) {
       timings: true,
       chunks: false,
       chunkModules: false,
-      modules: false,
-    },
+      modules: false
+    }
   });
 
   app.use(middleware);
@@ -117,31 +129,64 @@ app.get('/install', (req, res) => res.render('install'));
 const shopify = ShopifyExpress(shopifyConfig);
 
 // Mount Shopify Routes
-const {routes, middleware} = shopify;
-const {withShop, withWebhook} = middleware;
+const { routes, middleware } = shopify;
+const { withShop, withWebhook } = middleware;
 
 app.use('/shopify', routes);
 
+app.get('/shopify/callback', (req, res) => {
+  const { shop, hmac, code, state } = req.query;
+  const stateCookie = cookie.parse(req.headers.cookie).state;
+
+  if (state !== stateCookie) {
+    return res.status(403).send('Request origin cannot be verified');
+  }
+
+  if (shop && hmac && code) {
+    const map = Object.assign({}, req.query);
+    delete map['hmac'];
+    const message = querystring.stringify(map);
+    const generatedHash = crypto
+      .createHmac('sha256', SHOPIFY_APP_SECRET)
+      .update(message)
+      .digest('hex');
+
+    if (generatedHash !== hmac) {
+      return res.status(400).send('HMAC validation failed');
+    }
+    res.status(200).send('HMAC validated');
+  } else {
+    res.status(400).send('Required parameters missing');
+  }
+});
 // Client
-app.get('/', withShop({authBaseUrl: '/shopify'}), function(request, response) {
-  const { session: { shop, accessToken } } = request;
+app.get('/', withShop({ authBaseUrl: '/shopify' }), function(
+  request,
+  response
+) {
+  const {
+    session: { shop, accessToken }
+  } = request;
   response.render('app', {
     title: 'Shopify Node App',
     apiKey: shopifyConfig.apiKey,
-    shop: shop,
+    shop: shop
   });
 });
 
-app.post('/order-create', withWebhook((error, request) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
+app.post(
+  '/order-create',
+  withWebhook((error, request) => {
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-  console.log('We got a webhook!');
-  console.log('Details: ', request.webhook);
-  console.log('Body:', request.body);
-}));
+    console.log('We got a webhook!');
+    console.log('Details: ', request.webhook);
+    console.log('Body:', request.body);
+  })
+);
 
 glob('./routers/*.js', { cwd: path.resolve('./server') }, (err, routes) => {
   if (err) {
@@ -152,24 +197,31 @@ glob('./routers/*.js', { cwd: path.resolve('./server') }, (err, routes) => {
   console.log(chalk.green(`included ${routes.length} route files`));
 });
 
-app.use(cors({
-  exposedHeaders: ['Link']
-}));
+app.use(
+  cors({
+    exposedHeaders: ['Link']
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(jwt({
-  secret: dbConfig.jwt.secret,
-  credentialsRequired: false,
-  requestProperty: 'auth',
-  getToken: (req) => {
-    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-      return req.headers.authorization.split(' ')[1];
-    } else if (req.query && req.query.token) {
-      return req.query.token;
+app.use(
+  jwt({
+    secret: dbConfig.jwt.secret,
+    credentialsRequired: false,
+    requestProperty: 'auth',
+    getToken: req => {
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.split(' ')[0] === 'Bearer'
+      ) {
+        return req.headers.authorization.split(' ')[1];
+      } else if (req.query && req.query.token) {
+        return req.query.token;
+      }
+      return null;
     }
-    return null;
-  }
-}));
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -177,9 +229,12 @@ app.use('/api', routers);
 initPassport();
 // Error Handlers
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Methods", "PUT, POST, GET, PATCH, DELETE");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, PATCH, DELETE');
   const err = new Error('Not Found');
   err.status = 404;
   next(err);

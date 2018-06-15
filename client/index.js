@@ -15,14 +15,12 @@ import configureStore from '../client/configureStore';
 import initializeNotify from '../client/utils/notify';
 import { translationMessages } from '../client/i18n.js';
 
-
 const initialState = {};
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('root');
 global.notify = initializeNotify(store);
 
-
-const render = (messages) =>{
+const render = messages => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
@@ -33,7 +31,7 @@ const render = (messages) =>{
     </AppContainer>,
     document.getElementById('root')
   );
-}
+};
 
 render();
 
@@ -45,15 +43,12 @@ if (module.hot) {
 }
 
 if (!window.Intl) {
-  (new Promise((resolve) => {
+  new Promise(resolve => {
     resolve(intl);
-  }))
-    .then(() => Promise.all([
-      en,
-      de
-    ]))
+  })
+    .then(() => Promise.all([en, de]))
     .then(() => render(translationMessages))
-    .catch((err) => {
+    .catch(err => {
       throw err;
     });
 } else {

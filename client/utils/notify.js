@@ -5,7 +5,7 @@ export default function initialize(store) {
       heading,
       message,
       visible: true,
-      messageType: type,
+      messageType: type
     });
   };
 
@@ -15,6 +15,6 @@ export default function initialize(store) {
     },
     error(message, heading = 'Error') {
       showNotification(heading, message, 'error');
-    },
+    }
   };
 }

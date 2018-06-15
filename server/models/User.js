@@ -1,32 +1,36 @@
 const db = require('../sequelize');
 
 module.exports = function(sequelize, DataTypes) {
-  const User = sequelize.define('User', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+  const User = sequelize.define(
+    'User',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      full_name: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      facebook_id: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      access_token: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      industry_type: DataTypes.STRING(32)
     },
-    full_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    facebook_id: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    access_token: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    industry_type: DataTypes.STRING(32),
-  }, {
-    associate: (models) => {
-      User.hasMany(models.Message, { foreignKey: 'user_id' });
-    },
-    tableName: 'users',
-    timestamps: false
-  });
+    {
+      associate: models => {
+        User.hasMany(models.Message, { foreignKey: 'user_id' });
+      },
+      tableName: 'users',
+      timestamps: false
+    }
+  );
 
   // User.associate = (models) => {
   //   User.hasMany(models.Message, { foreignKey: 'user_id' });
@@ -37,17 +41,16 @@ module.exports = function(sequelize, DataTypes) {
     const facebookId = profile.id;
 
     return User.findOrCreate({
-      where:{ 'facebook_id': facebookId },
+      where: { facebook_id: facebookId },
       defaults: {
         full_name: fullName,
         facebook_id: facebookId,
         access_token: accessToken
       }
-    })
-    .spread((user) => {
+    }).spread(user => {
       return cb(null, user);
     });
   };
 
   return User;
-}
+};

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux-immutable';
 import triggerSaga from '../triggers/redux/reducers';
 
 const appReducer = combineReducers({
-  triggers: triggerSaga,
+  triggers: triggerSaga
 });
 
 const rootReducer = (state, action) => {

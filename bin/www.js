@@ -15,5 +15,7 @@ server.listen(port, err => {
   }
   console.log(`🚀 Now listening on port ${chalk.green(port)}`);
 });
-
-app.get('/assets/styles.css', function(req, res){ res.send('/assets/styles.css'); res.end(); });
+app.get('/assets/styles.css', function(req, res) {
+  res.send('/assets/styles.css');
+  res.end();
+});

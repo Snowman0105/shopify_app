@@ -6,5 +6,5 @@ module.exports = {
   User,
   Tag,
   Message,
-  FacebookTag,
+  FacebookTag
 };

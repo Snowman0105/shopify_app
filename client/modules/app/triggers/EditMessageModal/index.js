@@ -4,12 +4,28 @@ import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import {
-  Table, Header, Container, Loader, Button, Radio,
-  Tab, Modal, Grid, TextArea, Label, Input, Dimmer, Dropdown,
+  Table,
+  Header,
+  Container,
+  Loader,
+  Button,
+  Radio,
+  Tab,
+  Modal,
+  Grid,
+  TextArea,
+  Label,
+  Input,
+  Dimmer,
+  Dropdown
 } from 'semantic-ui-react';
 
-import ContentEditable from 'react-contenteditable'
-import { messageSaveRequest, loadNewMessage, msgLoadRequest } from '../redux/actions';
+import ContentEditable from 'react-contenteditable';
+import {
+  messageSaveRequest,
+  loadNewMessage,
+  msgLoadRequest
+} from '../redux/actions';
 import { makeSelectMsg, makeSelectMsgLoading } from '../redux/selectors';
 class EditmessageModal extends Component {
   constructor(...args) {
@@ -18,11 +34,11 @@ class EditmessageModal extends Component {
     const { open, msgId, tags, msgTemplate, categories } = this.props;
 
     let categoryList = [];
-    categories.map((category) => {
+    categories.map(category => {
       categoryList.push({
         key: category.get('tag'),
         value: category.get('id'),
-        text: category.get('name'),
+        text: category.get('name')
       });
     });
 
@@ -38,7 +54,7 @@ class EditmessageModal extends Component {
       category: '',
       triggerNameError: false,
       scheduleError: false,
-      categoryError: false,
+      categoryError: false
     };
   }
 
@@ -46,30 +62,36 @@ class EditmessageModal extends Component {
     this.loadMessage(this.state.msgId);
   }
 
-  loadMessage = (id) => {
+  loadMessage = id => {
     if (id === 'new') {
       this.props.loadNewMessage();
     } else {
-      this.setState({msgId: id});
+      this.setState({ msgId: id });
       this.props.msgLoadRequest(id);
     }
-  }
+  };
 
-  onInputField = (field) => (evt) => {
+  onInputField = field => evt => {
     if (field === 'triggerName') {
-      this.setState({triggerName: evt.target.value});
+      this.setState({ triggerName: evt.target.value });
     } else if (field === 'messageSchedule') {
-      this.setState({messageSchedule: evt.target.value});
+      this.setState({ messageSchedule: evt.target.value });
     }
-  }
+  };
 
-  dragStart = (event) => {
-    let tagName = '{{' + event.target.innerHTML +'}}';
+  dragStart = event => {
+    let tagName = '{{' + event.target.innerHTML + '}}';
     event.dataTransfer.setData('text/html', tagName);
-  }
+  };
 
   onSave = () => {
-    const { msgId, triggerName, messageSchedule, msgTemplate, category } = this.state;
+    const {
+      msgId,
+      triggerName,
+      messageSchedule,
+      msgTemplate,
+      category
+    } = this.state;
     console.log(msgId);
     if (!triggerName) {
       this.setState({ triggerNameError: true });
@@ -81,75 +103,104 @@ class EditmessageModal extends Component {
       this.setState({ categoryError: true });
     }
     if (msgId == 'new' && triggerName && messageSchedule && category) {
-      this.props.messageSaveRequest( msgId, triggerName, messageSchedule, msgTemplate, category );
+      this.props.messageSaveRequest(
+        msgId,
+        triggerName,
+        messageSchedule,
+        msgTemplate,
+        category
+      );
       this.props.onClose();
     } else if (msgId != 'new') {
-      this.props.messageSaveRequest( msgId, triggerName, messageSchedule, msgTemplate, category );
+      this.props.messageSaveRequest(
+        msgId,
+        triggerName,
+        messageSchedule,
+        msgTemplate,
+        category
+      );
       this.props.onClose();
     }
-  }
+  };
 
-  onSelectCategory = (field) => (event, data) => {
+  onSelectCategory = field => (event, data) => {
     if (field == 'category') {
       this.setState({ category: data.value });
     }
-  }
+  };
 
-  onEditMessageTemplate = (event) => {
-    this.setState({msgTemplate: event.target.value});
-  }
+  onEditMessageTemplate = event => {
+    this.setState({ msgTemplate: event.target.value });
+  };
 
-  dragDropTagsButton = (tagLists) => {
-    return tagLists.map((tag) => (
-      <Button key={tag.get('id')} draggable='true' basic color='black' className="tag-button" onDragStart={this.dragStart} >
+  dragDropTagsButton = tagLists => {
+    return tagLists.map(tag => (
+      <Button
+        key={tag.get('id')}
+        draggable="true"
+        basic
+        color="black"
+        className="tag-button"
+        onDragStart={this.dragStart}>
         {tag.get('tag_name')}
       </Button>
     ));
-  }
+  };
   render() {
     const { showModal, msgId, tags, categoryList } = this.state;
     const { msg, loading } = this.props;
     return (
-      <Modal size="small" open={showModal} onClose={this.props.onClose}  className="msg-trigger-modal" closeIcon>
+      <Modal
+        size="small"
+        open={showModal}
+        onClose={this.props.onClose}
+        className="msg-trigger-modal"
+        closeIcon>
         <Dimmer active={loading}>
           <Loader />
         </Dimmer>
         <Modal.Header>
-          { msg.get('id') ? `Edit ${msg.get('trigger_name')} trigger` : 'Create new custom trigger'}
-          { msg.get('id') &&
-            <p className="sub-message-header">{`${msg.get('trigger_name')} trigger ${msg.get('message_schedule')}`}</p>
-          }
+          {msg.get('id')
+            ? `Edit ${msg.get('trigger_name')} trigger`
+            : 'Create new custom trigger'}
+          {msg.get('id') && (
+            <p className="sub-message-header">{`${msg.get(
+              'trigger_name'
+            )} trigger ${msg.get('message_schedule')}`}</p>
+          )}
         </Modal.Header>
         <Modal.Content className="msg-modal-content">
-          {msgId=='new' &&
+          {msgId == 'new' && (
             <Grid>
               <Input
                 className="trigger-name"
-                label='Trigger Name'
+                label="Trigger Name"
                 required
                 error={this.state.triggerNameError}
-                placeholder='Input trigger name...'
+                placeholder="Input trigger name..."
                 value={msg.get('trigger_name') || this.state.triggerName}
                 onChange={this.onInputField('triggerName')}
               />
               <Input
                 className="message-schedule"
-                label='Message schedule'
+                label="Message schedule"
                 required
                 error={this.state.scheduleError}
-                placeholder='Input message schedule...'
-                value={msg.get('message_schedule') || this.state.messageSchedule}
+                placeholder="Input message schedule..."
+                value={
+                  msg.get('message_schedule') || this.state.messageSchedule
+                }
                 onChange={this.onInputField('messageSchedule')}
               />
             </Grid>
-          }
+          )}
           <Grid>
             <Grid.Row className="message-box-container">
               <Grid.Column width={16} className="message-div-first">
-                <Header as='h3' className="message-header-content-first">
+                <Header as="h3" className="message-header-content-first">
                   Your message to customer
                 </Header>
-                <Header as='h4' className="message-header-content-second">
+                <Header as="h4" className="message-header-content-second">
                   Preview and customize the triggered message below
                 </Header>
               </Grid.Column>
@@ -164,15 +215,30 @@ class EditmessageModal extends Component {
               </Grid.Column>
             </Grid.Row>
           </Grid>
-          <Header as='h6'>ADD MORE TAGS(DRAG AND DROP TO YOUR MESSAGE)</Header>
-          { showModal &&
-            this.dragDropTagsButton(tags)
-          }
-          <Dropdown placeholder="select one of categories..." fluid selection options={categoryList} value={msg.get('category_id')} onChange={this.onSelectCategory('category')} error={this.state.categoryError} ></Dropdown>
+          <Header as="h6">ADD MORE TAGS(DRAG AND DROP TO YOUR MESSAGE)</Header>
+          {showModal && this.dragDropTagsButton(tags)}
+          <Dropdown
+            placeholder="select one of categories..."
+            fluid
+            selection
+            options={categoryList}
+            value={msg.get('category_id')}
+            onChange={this.onSelectCategory('category')}
+            error={this.state.categoryError}
+          />
         </Modal.Content>
         <Modal.Actions>
-          <Button basic color='black' onClick={this.props.onClose} > Cancel </Button>
-          <Button color='facebook' icon='checkmark' labelPosition='right' onClick={this.onSave} content='Save' />
+          <Button basic color="black" onClick={this.props.onClose}>
+            {' '}
+            Cancel{' '}
+          </Button>
+          <Button
+            color="facebook"
+            icon="checkmark"
+            labelPosition="right"
+            onClick={this.onSave}
+            content="Save"
+          />
         </Modal.Actions>
       </Modal>
     );
@@ -181,15 +247,15 @@ class EditmessageModal extends Component {
 
 const mapStateToProps = createStructuredSelector({
   msg: makeSelectMsg(),
-  loading: makeSelectMsgLoading(),
+  loading: makeSelectMsgLoading()
 });
 
 const mapDispatchToProps = {
   messageSaveRequest,
   loadNewMessage,
-  msgLoadRequest,
+  msgLoadRequest
 };
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
-export default compose(withConnect)(EditmessageModal)
+export default compose(withConnect)(EditmessageModal);

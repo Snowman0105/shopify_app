@@ -1,6 +1,9 @@
 import 'whatwg-fetch';
 import moment from 'moment';
-import { setAPILoading, setGlobalNotification } from '~/containers/App/redux/actions';
+import {
+  setAPILoading,
+  setGlobalNotification
+} from '~/containers/App/redux/actions';
 import { getStore } from '../configureStore';
 
 /**
@@ -42,7 +45,14 @@ function checkStatus(response) {
  *
  * @return {object}           The response data
  */
-export default function request(url, method = 'GET', body = null, includeToken = false, isAPI = true) { // eslint-disable-line
+export default function request(
+  url,
+  method = 'GET',
+  body = null,
+  includeToken = false,
+  isAPI = true
+) {
+  // eslint-disable-line
   let requestUrl = url;
   const options = { method };
   const headers = { 'content-type': 'application/json' };
@@ -57,9 +67,14 @@ export default function request(url, method = 'GET', body = null, includeToken =
     options.body = JSON.stringify(body);
   }
   if (includeToken) {
-    const accessToken = store.getState().get('token').get('userInfo');
+    const accessToken = store
+      .getState()
+      .get('token')
+      .get('userInfo');
     const token = accessToken && accessToken.get('accessToken');
-    const exp = accessToken ? moment(accessToken.get('exp'), 'X') : moment().subtract(1, 'day');
+    const exp = accessToken
+      ? moment(accessToken.get('exp'), 'X')
+      : moment().subtract(1, 'day');
     if (moment().diff(exp) > 0) {
       store.dispatch(setGlobalNotification('API Error', 'Token is expired'));
       return Promise.reject(new Error('Token is expired'));
@@ -69,24 +84,33 @@ export default function request(url, method = 'GET', body = null, includeToken =
 
   return fetch(requestUrl, {
     ...options,
-    headers,
+    headers
   })
-  .then(checkStatus)
-  .then(parseJSON)
-  .then((resp) => {
-    store.dispatch(setAPILoading(false));
-    return resp;
-  })
-  .catch((err) => {
-    if (err.response) {
-      err.response.json()
-      .then((json) => {
-        store.dispatch(setGlobalNotification('Error', json && json.message ? json.message : 'Unknown error'));
-      });
-    } else {
-      store.dispatch(setGlobalNotification('API Error', err && err.message ? err.message : 'Unknown error'));
-    }
-    store.dispatch(setAPILoading(false));
-    throw err;
-  });
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(resp => {
+      store.dispatch(setAPILoading(false));
+      return resp;
+    })
+    .catch(err => {
+      if (err.response) {
+        err.response.json().then(json => {
+          store.dispatch(
+            setGlobalNotification(
+              'Error',
+              json && json.message ? json.message : 'Unknown error'
+            )
+          );
+        });
+      } else {
+        store.dispatch(
+          setGlobalNotification(
+            'API Error',
+            err && err.message ? err.message : 'Unknown error'
+          )
+        );
+      }
+      store.dispatch(setAPILoading(false));
+      throw err;
+    });
 }

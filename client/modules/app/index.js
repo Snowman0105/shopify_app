@@ -16,15 +16,13 @@ class App extends Component {
       <Switch>
         <Route exact path="/" component={MsgTrigger} />
       </Switch>
-    )
+    );
   }
 
   render() {
     return (
       <div className="main-app">
-        <Container className="app-container">
-          {this.Routes()}
-        </Container>
+        <Container className="app-container">{this.Routes()}</Container>
       </div>
     );
   }
@@ -35,8 +33,4 @@ const withConnect = connect(mapStateToProps);
 const withReducer = injectReducer({ key: 'app', reducer });
 const withSaga = injectSaga({ key: 'app', saga });
 
-export default withRouter(compose(
-    withReducer,
-    withSaga,
-    withConnect,
-)(App));
+export default withRouter(compose(withReducer, withSaga, withConnect)(App));

@@ -1,5 +1,5 @@
-import React, { Component} from 'react';
-import { Route, Switch } from "react-router-dom";
+import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -16,7 +16,10 @@ class FBLoginPage extends Component {
   }
 
   responseFacebook(fbUserInfo) {
-    const composedInfo = { ...fbUserInfo, access_token: fbUserInfo.accessToken };
+    const composedInfo = {
+      ...fbUserInfo,
+      access_token: fbUserInfo.accessToken
+    };
     delete composedInfo.accessToken;
     this.props.userLoginRequest(composedInfo);
   }
@@ -25,7 +28,10 @@ class FBLoginPage extends Component {
     return (
       <div className="facebook-login-page">
         <div className="sub-header">
-          <p>Authorize TR!BE Messenger App on your Facebook Page Settings. <br /> It only takes a ming- check the video</p>
+          <p>
+            Authorize TR!BE Messenger App on your Facebook Page Settings. <br />{' '}
+            It only takes a ming- check the video
+          </p>
         </div>
         <div className="first-page">
           <FacebookLogin
@@ -37,18 +43,18 @@ class FBLoginPage extends Component {
             textButton="Continue With Facebook"
             cssClass="fb-button-style"
             icon="fab fa-facebook-f"
-            callback={this.responseFacebook} />
-          </div>
+            callback={this.responseFacebook}
+          />
+        </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = createStructuredSelector({
-});
+const mapStateToProps = createStructuredSelector({});
 
 const mapDispatchToProps = {
-  userLoginRequest,
+  userLoginRequest
 };
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

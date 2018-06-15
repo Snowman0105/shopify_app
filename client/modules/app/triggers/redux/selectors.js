@@ -1,35 +1,33 @@
 import { createSelector } from 'reselect';
-const selectTrigger = (state) => state.get('app').get('triggers');
+const selectTrigger = state => state.get('app').get('triggers');
 
-const makeSelectTagList = () => createSelector(
-  selectTrigger,
-  (tagState) => tagState.getIn(['tags', 'list']),
-);
+const makeSelectTagList = () =>
+  createSelector(selectTrigger, tagState => tagState.getIn(['tags', 'list']));
 
-const makeSelectMsgList = () => createSelector(
-  selectTrigger,
-  (msgState) => msgState.getIn(['messages', 'msgs']),
-);
+const makeSelectMsgList = () =>
+  createSelector(selectTrigger, msgState =>
+    msgState.getIn(['messages', 'msgs'])
+  );
 
-const makeSelectMsgListLoading = () => createSelector(
-  selectTrigger,
-  (msgState) => msgState.getIn(['messages', 'loading']),
-);
+const makeSelectMsgListLoading = () =>
+  createSelector(selectTrigger, msgState =>
+    msgState.getIn(['messages', 'loading'])
+  );
 
-const makeSelectMsg = () => createSelector(
-  selectTrigger,
-  (msgState) => msgState.getIn(['message', 'data']),
-)
+const makeSelectMsg = () =>
+  createSelector(selectTrigger, msgState =>
+    msgState.getIn(['message', 'data'])
+  );
 
-const makeSelectMsgLoading = () => createSelector(
-  selectTrigger,
-  (msgState) => msgState.getIn(['message', 'loading']),
-)
+const makeSelectMsgLoading = () =>
+  createSelector(selectTrigger, msgState =>
+    msgState.getIn(['message', 'loading'])
+  );
 
-const makeSelectFBMsgTagList = () => createSelector(
-  selectTrigger,
-  (tagState) => tagState.getIn(['categories', 'fbmsgtags']),
-);
+const makeSelectFBMsgTagList = () =>
+  createSelector(selectTrigger, tagState =>
+    tagState.getIn(['categories', 'fbmsgtags'])
+  );
 
 export {
   selectTrigger,
@@ -38,5 +36,5 @@ export {
   makeSelectMsgListLoading,
   makeSelectMsg,
   makeSelectMsgLoading,
-  makeSelectFBMsgTagList,
+  makeSelectFBMsgTagList
 };

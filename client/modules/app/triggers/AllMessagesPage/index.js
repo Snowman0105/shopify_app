@@ -1,80 +1,94 @@
-import React, { Component} from 'react';
-import { Route, Switch, Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Route, Switch, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import {
-  Table, Header, Container, Dimmer, Loader, Button,
-  Confirm, Radio, Input, Tab, List, Grid, Item, Checkbox
+  Table,
+  Header,
+  Container,
+  Dimmer,
+  Loader,
+  Button,
+  Confirm,
+  Radio,
+  Input,
+  Tab,
+  List,
+  Grid,
+  Item,
+  Checkbox
 } from 'semantic-ui-react';
 import { makeSelectMsgList } from '../redux/selectors';
-import { makeSaveNotificaitonStatusRequest, deleteMsgRequest } from '../redux/actions';
+import {
+  makeSaveNotificaitonStatusRequest,
+  deleteMsgRequest
+} from '../redux/actions';
 
 class AllMessagesPage extends Component {
   constructor(props) {
     super(props);
   }
 
-  notificationSwitch = (msgId) => (event, data) => {
+  notificationSwitch = msgId => (event, data) => {
     this.props.makeSaveNotificaitonStatus(msgId, data.checked);
-  }
+  };
 
-  onDelete = (msgId) => () => {
+  onDelete = msgId => () => {
     this.props.deleteMsgRequest(msgId);
-  }
+  };
 
   renderMessages = () => {
-
     const { msgs } = this.props;
     if (!msgs.size) {
       return (
         <Table.Body>
           <Table.Row>
-            <Table.Cell colSpan="5">
-              No Messages
-            </Table.Cell>
+            <Table.Cell colSpan="5">No Messages</Table.Cell>
           </Table.Row>
         </Table.Body>
       );
     }
 
-    const rows = msgs.map((msg) => (
+    const rows = msgs.map(msg => (
       <Table.Row key={msg.get('id')}>
         <Table.Cell>
-          { msg.get('msg_notification') == true
-            ? <Checkbox onChange={this.notificationSwitch(msg.get('id'))} checked toggle />
-            : <Checkbox onChange={this.notificationSwitch(msg.get('id'))} toggle />
-          }
+          {msg.get('msg_notification') == true ? (
+            <Checkbox
+              onChange={this.notificationSwitch(msg.get('id'))}
+              checked
+              toggle
+            />
+          ) : (
+            <Checkbox
+              onChange={this.notificationSwitch(msg.get('id'))}
+              toggle
+            />
+          )}
         </Table.Cell>
         <Table.Cell>
-          <Link to='#' onClick={this.props.onShowModal(msg.get('id'))}>
+          <Link to="#" onClick={this.props.onShowModal(msg.get('id'))}>
             {msg.get('trigger_name')}
           </Link>
         </Table.Cell>
+        <Table.Cell>{msg.get('message_schedule')}</Table.Cell>
+        <Table.Cell>0</Table.Cell>
+        <Table.Cell>0</Table.Cell>
         <Table.Cell>
-          {msg.get('message_schedule')}
-        </Table.Cell>
-        <Table.Cell>
-          0
-        </Table.Cell>
-        <Table.Cell>
-          0
-        </Table.Cell>
-        <Table.Cell>
-          <Button icon='delete' color='red' onClick={this.onDelete(msg.get('id'))}></Button>
+          <Button
+            icon="delete"
+            color="red"
+            onClick={this.onDelete(msg.get('id'))}
+          />
         </Table.Cell>
       </Table.Row>
     ));
 
-    return (
-      <Table.Body>
-        {rows}
-      </Table.Body>
-    );
-  }
+    return <Table.Body>{rows}</Table.Body>;
+  };
 
   render() {
-    return(
+    return (
       <Table>
         <Table.Header>
           <Table.Row>
@@ -87,20 +101,19 @@ class AllMessagesPage extends Component {
           </Table.Row>
         </Table.Header>
         {this.renderMessages()}
-        <Table.Footer>
-        </Table.Footer>
+        <Table.Footer />
       </Table>
     );
   }
 }
 
 const mapStateToProps = createStructuredSelector({
-  msgs: makeSelectMsgList(),
+  msgs: makeSelectMsgList()
 });
 
 const mapDispatchToProps = {
   makeSaveNotificaitonStatus: makeSaveNotificaitonStatusRequest,
-  deleteMsgRequest,
+  deleteMsgRequest
 };
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

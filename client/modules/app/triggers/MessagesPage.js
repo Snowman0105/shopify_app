@@ -4,19 +4,34 @@ import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import {
-  Table, Header, Container, Loader, Button, Radio,
-  Tab, Modal, Grid, TextArea, Label, Input, Dimmer,
+  Table,
+  Header,
+  Container,
+  Loader,
+  Button,
+  Radio,
+  Tab,
+  Modal,
+  Grid,
+  TextArea,
+  Label,
+  Input,
+  Dimmer
 } from 'semantic-ui-react';
-import ContentEditable from 'react-contenteditable'
+import ContentEditable from 'react-contenteditable';
 import AllMessagesPage from './AllMessagesPage';
 import EditMessageModal from './EditMessageModal';
 import {
   allTriggerMessagesRequest,
   getDragAndDropTagsRequest,
   messageSaveRequest,
-  getFacebookTagsRequest,
+  getFacebookTagsRequest
 } from './redux/actions';
-import { makeSelectTagList, makeSelectMsgListLoading, makeSelectFBMsgTagList } from './redux/selectors';
+import {
+  makeSelectTagList,
+  makeSelectMsgListLoading,
+  makeSelectFBMsgTagList
+} from './redux/selectors';
 
 class MessagesPage extends Component {
   constructor(...args) {
@@ -25,7 +40,7 @@ class MessagesPage extends Component {
     this.state = {
       showModal: false,
       msgId: '',
-      msgTemplate: '',
+      msgTemplate: ''
     };
     this.loaded = false;
   }
@@ -36,53 +51,60 @@ class MessagesPage extends Component {
     this.props.getFacebookTagsRequest();
   }
 
-  onShowModal = (id) => () => {
+  onShowModal = id => () => {
     this.setState({ showModal: true, msgId: id });
-  }
+  };
 
   onClose = () => {
-    this.setState({ showModal: false , msgTemplate: '', msgId: '' });
-  }
+    this.setState({ showModal: false, msgTemplate: '', msgId: '' });
+  };
 
   render() {
     const { loading } = this.props;
     const panes = [
       {
         menuItem: 'All triggers',
-        render:() => <Tab.Pane>
-                      <Dimmer active={loading}>
-                        <Loader />
-                      </Dimmer>
-                      <AllMessagesPage
-                        onShowModal={this.onShowModal}
-                      />
-                    </Tab.Pane>
+        render: () => (
+          <Tab.Pane>
+            <Dimmer active={loading}>
+              <Loader />
+            </Dimmer>
+            <AllMessagesPage onShowModal={this.onShowModal} />
+          </Tab.Pane>
+        )
       },
       {
         menuItem: 'Best performing',
-        render:() => <Tab.Pane>
-                      <h1>Best performing</h1>
-                    </Tab.Pane>
-      },
+        render: () => (
+          <Tab.Pane>
+            <h1>Best performing</h1>
+          </Tab.Pane>
+        )
+      }
     ];
 
-    return(
+    return (
       <div className="message-trigger">
-        <Button floated="right" onClick={this.onShowModal('new')} primary content='+ Create custom trigger' />
-        <Header as='h2' content='Message triggers' />
+        <Button
+          floated="right"
+          onClick={this.onShowModal('new')}
+          primary
+          content="+ Create custom trigger"
+        />
+        <Header as="h2" content="Message triggers" />
         <Container>
-          <Tab menu={{secondary: true, pointing: true}} panes={panes} />
+          <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
         </Container>
-        { this.state.msgId &&
+        {this.state.msgId && (
           <EditMessageModal
             open={this.state.showModal}
             msgId={this.state.msgId}
-            msgTemplate = {this.state.msgTemplate}
+            msgTemplate={this.state.msgTemplate}
             tags={this.props.tags}
-            categories = {this.props.categories}
+            categories={this.props.categories}
             onClose={this.onClose}
           />
-        }
+        )}
       </div>
     );
   }
@@ -91,14 +113,14 @@ class MessagesPage extends Component {
 const mapStateToProps = createStructuredSelector({
   tags: makeSelectTagList(),
   loading: makeSelectMsgListLoading(),
-  categories: makeSelectFBMsgTagList(),
+  categories: makeSelectFBMsgTagList()
 });
 
 const mapDispatchToProps = {
   allTriggerMessagesRequest,
   getDragAndDropTagsRequest,
   messageSaveRequest,
-  getFacebookTagsRequest,
+  getFacebookTagsRequest
 };
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

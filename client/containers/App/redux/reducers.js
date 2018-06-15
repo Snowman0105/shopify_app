@@ -9,8 +9,8 @@ const initialState = fromJS({
     type: '',
     visible: false,
     heading: '',
-    message: '',
-  },
+    message: ''
+  }
 });
 
 function appReducer(state = initialState, action) {
@@ -20,12 +20,15 @@ function appReducer(state = initialState, action) {
     case CONSTANTS.SET_API_LOADING:
       return state.set('loading', action.value);
     case CONSTANTS.SET_GLOBAL_NOTIFICATION:
-      return state.set('notification', fromJS({
-        type: action.messageType,
-        visible: action.visible,
-        heading: action.heading,
-        message: action.message,
-      }));
+      return state.set(
+        'notification',
+        fromJS({
+          type: action.messageType,
+          visible: action.visible,
+          heading: action.heading,
+          message: action.message
+        })
+      );
     default:
       return state;
   }

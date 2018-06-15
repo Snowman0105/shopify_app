@@ -8,21 +8,21 @@ const sourceMap = isDevelopment;
 const plugins = isDevelopment
   ? [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('development'),
+        'process.env.NODE_ENV': JSON.stringify('development')
       }),
-      new webpack.HotModuleReplacementPlugin(),
+      new webpack.HotModuleReplacementPlugin()
     ]
   : [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('production'),
+        'process.env.NODE_ENV': JSON.stringify('production')
       }),
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
         compressor: {
-          warnings: false,
+          warnings: false
         },
-        minimize: true,
-      }),
+        minimize: true
+      })
     ];
 
 const extraEntryFiles = isDevelopment
@@ -37,14 +37,14 @@ module.exports = {
     main: [
       ...extraEntryFiles,
       '@shopify/polaris/styles.css',
-      path.resolve(__dirname, '../client/index.js'),
-    ],
+      path.resolve(__dirname, '../client/index.js')
+    ]
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, '../assets'),
     publicPath: '/assets/',
-    libraryTarget: 'var',
+    libraryTarget: 'var'
   },
   resolve: {
     extensions: ['.js', '.css'],
@@ -57,14 +57,14 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.s?css$/,
         exclude: /node_modules/,
         loaders: [
           {
-            loader: 'style-loader',
+            loader: 'style-loader'
           },
           {
             loader: 'css-loader',
@@ -72,24 +72,24 @@ module.exports = {
               sourceMap,
               modules: true,
               importLoaders: 1,
-              localIdentName: '[name]-[local]_[hash:base64:5]',
-            },
+              localIdentName: '[name]-[local]_[hash:base64:5]'
+            }
           },
           {
             loader: 'postcss-loader',
             options: {
               plugins: () => autoprefixer(),
-              sourceMap,
-            },
-          },
-        ],
+              sourceMap
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
         include: path.resolve(__dirname, '../node_modules/@shopify/polaris'),
         loaders: [
           {
-            loader: 'style-loader',
+            loader: 'style-loader'
           },
           {
             loader: 'css-loader',
@@ -97,11 +97,11 @@ module.exports = {
               sourceMap,
               modules: true,
               importLoaders: 1,
-              localIdentName: '[local]',
-            },
-          },
-        ],
-      },
-    ],
-  },
+              localIdentName: '[local]'
+            }
+          }
+        ]
+      }
+    ]
+  }
 };

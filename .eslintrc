@@ -1,11 +1,27 @@
 {
-  "plugins": [
+  "extends": [
     "prettier"
   ],
-  "rules": {
-    "prettier/prettier": "error"
+  "plugins": [
+    "react",
+    "prettier",
+    "import"
+  ],
+  "settings": {
+    "import/parser": "babel-eslint",
+    "import/resolve": {
+      "moduleDirectory": ["node_modules", "src"]
+    },
   },
-  "extends": [
-      "prettier"
-  ]
+  "parser": "babel-eslint",
+  "rules": {
+    "prettier/prettier": ["error", {
+      "singleQuote": true,
+      "jsxBracketSameLine": true,
+      "parser": "flow",
+    }]
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  }
 }

@@ -16,8 +16,10 @@ export const MESSAGE_LOAD_REQUEST = 'message/load/request';
 export const MESSAGE_LOAD_SUCCESS = 'message/load/success';
 export const MESSAGE_LOAD_ERROR = 'message/load/error';
 
-export const MESSAGE_NOTIFICATION_STATUS_REQUEST = 'message/notification/request';
-export const MESSAGE_NOTIFICATION_STATUS_SUCCESS = 'message/notification/success';
+export const MESSAGE_NOTIFICATION_STATUS_REQUEST =
+  'message/notification/request';
+export const MESSAGE_NOTIFICATION_STATUS_SUCCESS =
+  'message/notification/success';
 export const MESSAGE_NOTIFICATION_STATUS_ERROR = 'message/notification/error';
 
 export const MESSAGE_DELETE_REQUEST = 'message/delete/request';

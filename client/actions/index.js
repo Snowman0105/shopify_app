@@ -2,8 +2,8 @@ export function updateVerb(verb) {
   return {
     type: 'UPDATE_VERB',
     payload: {
-      verb,
-    },
+      verb
+    }
   };
 }
 
@@ -11,8 +11,8 @@ export function updatePath(path) {
   return {
     type: 'UPDATE_PATH',
     payload: {
-      path,
-    },
+      path
+    }
   };
 }
 
@@ -20,8 +20,8 @@ export function updateParams(params) {
   return {
     type: 'UPDATE_PARAMS',
     payload: {
-      params,
-    },
+      params
+    }
   };
 }
 
@@ -31,14 +31,14 @@ export function sendRequest(requestFields) {
   const fetchOptions = {
     method: verb,
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    credentials: 'include',
-  }
+    credentials: 'include'
+  };
 
   if (verb !== 'GET') {
-    fetchOptions['body'] = params
+    fetchOptions['body'] = params;
   }
 
   return dispatch => {
@@ -56,7 +56,7 @@ export function sendRequest(requestFields) {
 function requestStartAction() {
   return {
     type: 'REQUEST_START',
-    payload: {},
+    payload: {}
   };
 }
 
@@ -67,7 +67,7 @@ function requestCompleteAction(json) {
     type: 'REQUEST_COMPLETE',
     payload: {
       responseBody
-    },
+    }
   };
 }
 
@@ -75,7 +75,7 @@ function requestErrorAction(requestError) {
   return {
     type: 'REQUEST_ERROR',
     payload: {
-      requestError,
-    },
+      requestError
+    }
   };
 }

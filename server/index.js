@@ -11,6 +11,7 @@ const RedisStore = require('connect-redis')(session);
 const path = require('path');
 const logger = require('morgan');
 const http = require('http');
+const https = require('https');
 const mysql = require('mysql');
 
 const cors = require('cors');
@@ -38,6 +39,7 @@ const {
   SHOPIFY_APP_KEY,
   SHOPIFY_APP_HOST,
   SHOPIFY_APP_SECRET,
+  SHOPIFY_APP_NGROK_HOST,
   NODE_ENV
 } = process.env;
 
@@ -54,7 +56,7 @@ const shopifyConfig = {
 
     registerWebhook(shop, accessToken, {
       topic: 'orders/create',
-      address: `${SHOPIFY_APP_HOST}/order-create`,
+      address: `${SHOPIFY_APP_NGROK_HOST}/order-create`,
       format: 'json'
     });
 
@@ -81,7 +83,7 @@ const registerWebhook = function(shopDomain, accessToken, webhook) {
 };
 
 const app = express();
-app.server = http.createServer(app);
+app.server = https.createServer(app);
 app.use(logger('combined'));
 const isDevelopment = NODE_ENV !== 'production';
 
@@ -134,31 +136,6 @@ const { withShop, withWebhook } = middleware;
 
 app.use('/shopify', routes);
 
-app.get('/shopify/callback', (req, res) => {
-  const { shop, hmac, code, state } = req.query;
-  const stateCookie = cookie.parse(req.headers.cookie).state;
-
-  if (state !== stateCookie) {
-    return res.status(403).send('Request origin cannot be verified');
-  }
-
-  if (shop && hmac && code) {
-    const map = Object.assign({}, req.query);
-    delete map['hmac'];
-    const message = querystring.stringify(map);
-    const generatedHash = crypto
-      .createHmac('sha256', SHOPIFY_APP_SECRET)
-      .update(message)
-      .digest('hex');
-
-    if (generatedHash !== hmac) {
-      return res.status(400).send('HMAC validation failed');
-    }
-    res.status(200).send('HMAC validated');
-  } else {
-    res.status(400).send('Required parameters missing');
-  }
-});
 // Client
 app.get('/', withShop({ authBaseUrl: '/shopify' }), function(
   request,

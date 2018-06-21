@@ -4,13 +4,17 @@
   "private": true,
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
-    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
-    "prod": "yarn run clean && yarn run build && cross-env NODE_ENV=production yarn run start",
+    "watch-css":
+      "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "prod":
+      "yarn run clean && yarn run build && cross-env NODE_ENV=production yarn run start",
     "dev": "cross-env NODE_ENV=development yarn run start",
     "start": "nodemon ./bin/www",
-    "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.config.js --progress --profile --colors",
+    "build":
+      "cross-env NODE_ENV=production webpack --config ./config/webpack.config.js --progress --profile --colors",
     "clean": "rm -rf ./assets && mkdir ./assets",
-    "pretty": "prettier --single-quote --trailing-comma es5 --write {client,bin,config,server}{/*,/**/*}.js",
+    "pretty":
+      "prettier --single-quote --trailing-comma es5 --write {client,bin,config,server}{/*,/**/*}.js",
     "precommit": "yarn run pretty"
   },
   "engines": {
@@ -28,7 +32,8 @@
   ],
   "dependencies": {
     "@shopify/polaris": "^1.8.3",
-    "@shopify/shopify-express": "^1.0.0-alpha.7",
+    "@shopify/shopify-express":
+      "git+https://github.com/Shopify/shopify-express.git",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
@@ -77,6 +82,7 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "promise": "^8.0.1",
+    "raw-body": "^2.3.3",
     "react": "^16.2.0",
     "react-contenteditable": "^2.1.0",
     "react-datepicker": "^1.5.0",

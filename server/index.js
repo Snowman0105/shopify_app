@@ -35,6 +35,8 @@ const { MemoryStrategy } = require('@shopify/shopify-express/strategies');
 const bodyParser = require('body-parser');
 const routers = require('./routers');
 
+const verifyWebhookServices = require('./services/webhook');
+
 const {
   SHOPIFY_APP_KEY,
   SHOPIFY_APP_HOST,
@@ -55,8 +57,8 @@ const shopifyConfig = {
     } = request;
 
     registerWebhook(shop, accessToken, {
-      topic: 'orders/create',
-      address: `${SHOPIFY_APP_NGROK_HOST}/order-create`,
+      topic: 'carts/create',
+      address: `${SHOPIFY_APP_NGROK_HOST}/carts-create`,
       format: 'json'
     });
 
@@ -83,7 +85,7 @@ const registerWebhook = function(shopDomain, accessToken, webhook) {
 };
 
 const app = express();
-app.server = https.createServer(app);
+app.server = http.createServer(app);
 app.use(logger('combined'));
 const isDevelopment = NODE_ENV !== 'production';
 
@@ -151,19 +153,7 @@ app.get('/', withShop({ authBaseUrl: '/shopify' }), function(
   });
 });
 
-app.post(
-  '/order-create',
-  withWebhook((error, request) => {
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    console.log('We got a webhook!');
-    console.log('Details: ', request.webhook);
-    console.log('Body:', request.body);
-  })
-);
+app.post('/carts-create', verifyWebhookServices.addCats);
 
 glob('./routers/*.js', { cwd: path.resolve('./server') }, (err, routes) => {
   if (err) {

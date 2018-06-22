@@ -18,7 +18,9 @@ import {
   deleteMsgSuccess,
   deleteMsgError,
   getFacebookTagsSuccess,
-  getFacebookTagsError
+  getFacebookTagsError,
+  getWebhookEventsSuccess,
+  getWebhookEventsError
 } from './actions';
 
 export function* getDragAndDropTagsRequest() {
@@ -54,9 +56,11 @@ export function* messageSaveRequest(action) {
     } else {
       const messageContent = requestData.msgTemplate;
       const categoryId = requestData.category;
+      const eventId = requestData.eventTitle;
       const requestBody = {
         messageContent: messageContent,
-        categoryId: categoryId
+        categoryId: categoryId,
+        eventId: eventId
       };
       responseData = yield call(
         request,
@@ -144,7 +148,7 @@ export function* getFacebookTagsRequest() {
   try {
     const data = yield call(
       request,
-      `fbtagservices/all`,
+      'fbtagservices/all',
       'GET',
       null,
       true,
@@ -153,6 +157,22 @@ export function* getFacebookTagsRequest() {
     yield put(getFacebookTagsSuccess(data));
   } catch (err) {
     yield put(getFacebookTagsError(err));
+  }
+}
+
+export function* getWebhookEventsRequest() {
+  try {
+    const data = yield call(
+      request,
+      'eventservices/all',
+      'GET',
+      null,
+      true,
+      true
+    );
+    yield put(getWebhookEventsSuccess(data));
+  } catch (err) {
+    yield put(getWebhookEventsError(err));
   }
 }
 
@@ -175,5 +195,6 @@ export default [
     makeSaveNotificaitonStatus
   ),
   fork(takeLatest, CONSTANTS.MESSAGE_DELETE_REQUEST, deleteMessageReqeust),
-  fork(takeLatest, CONSTANTS.FACEBOOK_MSG_TAGS_REQUEST, getFacebookTagsRequest)
+  fork(takeLatest, CONSTANTS.FACEBOOK_MSG_TAGS_REQUEST, getFacebookTagsRequest),
+  fork(takeLatest, CONSTANTS.WEBHOOK_EVENTS_REQUEST, getWebhookEventsRequest)
 ];

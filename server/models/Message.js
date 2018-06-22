@@ -1,8 +1,8 @@
-const db = require("../sequelize");
+const db = require('../sequelize');
 
 module.exports = function(sequelize, DataTypes) {
   const Message = sequelize.define(
-    "Message",
+    'Message',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -13,7 +13,7 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.INTEGER,
         references: {
           model: db.User,
-          key: "id",
+          key: 'id',
           deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       },
@@ -25,25 +25,29 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.INTEGER,
         references: {
           model: db.FacebookTag,
-          key: "id",
+          key: 'id',
+          deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
+      },
+      event_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: db.Event,
+          key: 'id',
           deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       }
     },
     {
       associate: models => {
-        Message.belongsTo(models.User, { foreignKey: "user_id" });
-        Message.belongsTo(models.FacebookTag, { foreignKey: "category_id" });
+        Message.belongsTo(models.User, { foreignKey: 'user_id' });
+        Message.belongsTo(models.FacebookTag, { foreignKey: 'category_id' });
+        Message.belongsTo(models.Event, { foreignKey: 'event_id' });
       },
-      tableName: "messages",
+      tableName: 'messages',
       timestamps: false
     }
   );
-
-  // Message.associate = (models) => {
-  //   Message.belongsTo(models.User, { foreignKey: 'user_id' });
-  //   Message.belongsTo(models.FacebookTag, { foreignKey: 'category_id' });
-  // };
 
   return Message;
 };

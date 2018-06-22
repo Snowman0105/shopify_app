@@ -45,14 +45,16 @@ export function messageSaveRequest(
   triggerName,
   messageSchedule,
   msgTemplate,
-  category
+  category,
+  eventTitle
 ) {
   const requestData = {
     msgId,
     triggerName,
     messageSchedule,
     msgTemplate,
-    category
+    category,
+    eventTitle
   };
 
   return {
@@ -162,5 +164,25 @@ export function getFacebookTagsError(error) {
   return {
     type: CONSTANTS.FACEBOOK_MSG_TAGS_ERROR,
     error
+  };
+}
+
+export function getWebhookEventsRequest() {
+  return {
+    type: CONSTANTS.WEBHOOK_EVENTS_REQUEST
+  };
+}
+
+export function getWebhookEventsSuccess(data) {
+  return {
+    type: CONSTANTS.WEBHOOK_EVENTS_SUCCESS,
+    data
+  };
+}
+
+export function getWebhookEventsError(err) {
+  return {
+    type: CONSTANTS.WEBHOOK_EVENTS_ERROR,
+    err
   };
 }

@@ -1,29 +1,33 @@
 module.exports = function(sequelize, DataTypes) {
-  const FacebookTag = sequelize.define(
-    'FacebookTag',
+  const Event = sequelize.define(
+    'Event',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      tag: {
+      event: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      name: {
+      topic: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      webhook: {
         type: DataTypes.STRING,
         allowNull: false
       }
     },
     {
       associate: models => {
-        FacebookTag.hasMany(models.Message, { foreignKey: 'category_id' });
+        Event.hasMany(models.Message, { foreignKey: 'event_id' });
       },
-      tableName: 'fbmessagetags',
+      tableName: 'events',
       timestamps: false
     }
   );
 
-  return FacebookTag;
+  return Event;
 };

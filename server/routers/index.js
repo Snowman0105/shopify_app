@@ -5,11 +5,13 @@ const userRoutes = require('./user.route.js');
 const tagRoutes = require('./tag.route.js');
 const messageRoutes = require('./message.route.js');
 const fbtagRoutes = require('./fbtag.route.js');
+const eventRoutes = require('./event.route.js');
 // api for front-end (shopify-app : step 1~4)
 
 router.use('/userservices', userRoutes);
 router.use('/tagservices', tagRoutes);
 router.use('/messageservices', messageRoutes);
 router.use('/fbtagservices', fbtagRoutes);
+router.use('/eventservices', eventRoutes);
 
 module.exports = router;

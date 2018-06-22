@@ -31,14 +31,23 @@ class EditmessageModal extends Component {
   constructor(...args) {
     super(...args);
 
-    const { open, msgId, tags, msgTemplate, categories } = this.props;
+    const { open, msgId, tags, msgTemplate, categories, events } = this.props;
 
     let categoryList = [];
+    let eventsList = [];
     categories.map(category => {
       categoryList.push({
         key: category.get('tag'),
         value: category.get('id'),
         text: category.get('name')
+      });
+    });
+
+    events.map(event => {
+      eventsList.push({
+        key: event.get('event'),
+        value: event.get('id'),
+        text: event.get('event')
       });
     });
 
@@ -51,11 +60,23 @@ class EditmessageModal extends Component {
       messageSchedule: '',
       msgTemplate: msgTemplate,
       categoryList: categoryList,
+      eventList: eventsList,
       category: '',
+      eventTitle: '',
       triggerNameError: false,
       scheduleError: false,
-      categoryError: false
+      categoryError: false,
+      eventError: false
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.msg.size > 0) {
+      this.setState({
+        category: nextProps.msg.get('category_id'),
+        eventTitle: nextProps.msg.get('event_id')
+      });
+    }
   }
 
   componentWillMount() {
@@ -90,9 +111,12 @@ class EditmessageModal extends Component {
       triggerName,
       messageSchedule,
       msgTemplate,
-      category
+      category,
+      eventTitle
     } = this.state;
-    console.log(msgId);
+
+    const { msg } = this.props;
+
     if (!triggerName) {
       this.setState({ triggerNameError: true });
     }
@@ -102,35 +126,58 @@ class EditmessageModal extends Component {
     if (!category) {
       this.setState({ categoryError: true });
     }
-    if (msgId == 'new' && triggerName && messageSchedule && category) {
+    if (!eventTitle) {
+      this.setState({ eventError: true });
+    }
+    if (
+      msgId == 'new' &&
+      triggerName &&
+      messageSchedule &&
+      category &&
+      eventTitle
+    ) {
       this.props.messageSaveRequest(
         msgId,
         triggerName,
         messageSchedule,
         msgTemplate,
-        category
+        category,
+        eventTitle
       );
       this.props.onClose();
     } else if (msgId != 'new') {
+      let categoryId = category;
+      let eventId = eventTitle;
+
+      if (categoryId === '') {
+        categoryId = msg.get('category_id');
+      }
+      if (eventId === '') {
+        eventId = msg.get('event_id');
+      }
       this.props.messageSaveRequest(
         msgId,
         triggerName,
         messageSchedule,
         msgTemplate,
-        category
+        categoryId,
+        eventId
       );
       this.props.onClose();
     }
   };
 
-  onSelectCategory = field => (event, data) => {
+  onSelectDropdown = field => (evt, data) => {
     if (field == 'category') {
       this.setState({ category: data.value });
     }
+    if (field == 'event') {
+      this.setState({ eventTitle: data.value });
+    }
   };
 
-  onEditMessageTemplate = event => {
-    this.setState({ msgTemplate: event.target.value });
+  onEditMessageTemplate = evt => {
+    this.setState({ msgTemplate: evt.target.value });
   };
 
   dragDropTagsButton = tagLists => {
@@ -147,8 +194,17 @@ class EditmessageModal extends Component {
     ));
   };
   render() {
-    const { showModal, msgId, tags, categoryList } = this.state;
+    const {
+      showModal,
+      msgId,
+      tags,
+      categoryList,
+      eventList,
+      category,
+      eventTitle
+    } = this.state;
     const { msg, loading } = this.props;
+
     return (
       <Modal
         size="small"
@@ -222,15 +278,24 @@ class EditmessageModal extends Component {
             fluid
             selection
             options={categoryList}
-            value={msg.get('category_id')}
-            onChange={this.onSelectCategory('category')}
+            value={category}
+            onChange={this.onSelectDropdown('category')}
             error={this.state.categoryError}
+          />
+          <Dropdown
+            placeholder="select one of webhook events..."
+            fluid
+            className="webhook-events"
+            selection
+            options={eventList}
+            value={eventTitle}
+            onChange={this.onSelectDropdown('event')}
+            error={this.state.eventError}
           />
         </Modal.Content>
         <Modal.Actions>
           <Button basic color="black" onClick={this.props.onClose}>
-            {' '}
-            Cancel{' '}
+            Cancel
           </Button>
           <Button
             color="facebook"

@@ -29,3 +29,7 @@ export const MESSAGE_DELETE_ERROR = 'message/delete/error';
 export const FACEBOOK_MSG_TAGS_REQUEST = 'facebook/message/tags/request';
 export const FACEBOOK_MSG_TAGS_SUCCESS = 'facebook/message/tags/success';
 export const FACEBOOK_MSG_TAGS_ERROR = 'facebook/message/tags/error';
+
+export const WEBHOOK_EVENTS_REQUEST = 'webhook/event/request';
+export const WEBHOOK_EVENTS_SUCCESS = 'webhook/event/success';
+export const WEBHOOK_EVENTS_ERROR = 'webhook/event/error';

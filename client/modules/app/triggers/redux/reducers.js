@@ -25,6 +25,10 @@ const initialState = fromJS({
   categories: {
     fbmsgtags: [],
     error: ''
+  },
+  events: {
+    eventsList: [],
+    error: ''
   }
 });
 
@@ -65,6 +69,10 @@ function tagReducer(state = initialState, action) {
       return state.setIn(['categories', 'fbmsgtags'], fromJS(action.data));
     case CONSTANTS.FACEBOOK_MSG_TAGS_ERROR:
       return state.setIn(['categories', 'error'], fromJS(action.data.error));
+    case CONSTANTS.WEBHOOK_EVENTS_SUCCESS:
+      return state.setIn(['events', 'eventsList'], fromJS(action.data));
+    case CONSTANTS.WEBHOOK_EVENTS_ERROR:
+      return state.setIn(['events', 'error'], fromJS(action.data.error));
   }
 
   return state;

@@ -24,13 +24,15 @@ import EditMessageModal from './EditMessageModal';
 import {
   allTriggerMessagesRequest,
   getDragAndDropTagsRequest,
+  getWebhookEventsRequest,
   messageSaveRequest,
   getFacebookTagsRequest
 } from './redux/actions';
 import {
   makeSelectTagList,
   makeSelectMsgListLoading,
-  makeSelectFBMsgTagList
+  makeSelectFBMsgTagList,
+  makeSelectWebhookEventList
 } from './redux/selectors';
 
 class MessagesPage extends Component {
@@ -49,6 +51,7 @@ class MessagesPage extends Component {
     this.props.allTriggerMessagesRequest();
     this.props.getDragAndDropTagsRequest();
     this.props.getFacebookTagsRequest();
+    this.props.getWebhookEventsRequest();
   }
 
   onShowModal = id => () => {
@@ -102,6 +105,7 @@ class MessagesPage extends Component {
             msgTemplate={this.state.msgTemplate}
             tags={this.props.tags}
             categories={this.props.categories}
+            events={this.props.events}
             onClose={this.onClose}
           />
         )}
@@ -113,14 +117,16 @@ class MessagesPage extends Component {
 const mapStateToProps = createStructuredSelector({
   tags: makeSelectTagList(),
   loading: makeSelectMsgListLoading(),
-  categories: makeSelectFBMsgTagList()
+  categories: makeSelectFBMsgTagList(),
+  events: makeSelectWebhookEventList()
 });
 
 const mapDispatchToProps = {
   allTriggerMessagesRequest,
   getDragAndDropTagsRequest,
   messageSaveRequest,
-  getFacebookTagsRequest
+  getFacebookTagsRequest,
+  getWebhookEventsRequest
 };
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

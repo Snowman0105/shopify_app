@@ -29,6 +29,10 @@ const makeSelectFBMsgTagList = () =>
     tagState.getIn(['categories', 'fbmsgtags'])
   );
 
+const makeSelectWebhookEventList = () =>
+  createSelector(selectTrigger, eventState =>
+    eventState.getIn(['events', 'eventsList'])
+  );
 export {
   selectTrigger,
   makeSelectTagList,
@@ -36,5 +40,6 @@ export {
   makeSelectMsgListLoading,
   makeSelectMsg,
   makeSelectMsgLoading,
-  makeSelectFBMsgTagList
+  makeSelectFBMsgTagList,
+  makeSelectWebhookEventList
 };

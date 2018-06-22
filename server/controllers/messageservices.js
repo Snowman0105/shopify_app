@@ -6,8 +6,7 @@ exports.create = (req, res) => {
   const messageSchedule = req.body.messageSchedule;
   const msgTemplate = req.body.msgTemplate;
   const categoryId = req.body.category;
-
-  console.log(categoryId);
+  const eventId = req.body.eventTitle;
 
   db.Message.create({
     user_id: userId,
@@ -15,7 +14,8 @@ exports.create = (req, res) => {
     message_schedule: messageSchedule,
     message_content: msgTemplate,
     msg_notification: 0,
-    category_id: categoryId
+    category_id: categoryId,
+    event_id: eventId
   })
     .then(() => {
       db.Message.findOne({
@@ -77,11 +77,13 @@ exports.updateMessage = (req, res) => {
   const msgId = req.params.id;
   const messageContent = req.body.messageContent;
   const categoryId = req.body.categoryId;
+  const eventId = req.body.eventId;
 
   db.Message.update(
     {
       message_content: messageContent,
-      category_id: categoryId
+      category_id: categoryId,
+      event_id: eventId
     },
     {
       where: { id: msgId }

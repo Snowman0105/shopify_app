@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
   const Tag = sequelize.define(
-    "Tag",
+    'Tag',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
       classMethods: {
         associate: models => {}
       },
-      tableName: "tags",
+      tableName: 'tags',
       timestamps: false
     }
   );

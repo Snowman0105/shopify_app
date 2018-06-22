@@ -1,13 +1,14 @@
-const http = require('http');
-const crypto = require('crypto');
-const {
-  SHOPIFY_APP_KEY,
-  SHOPIFY_APP_HOST,
-  SHOPIFY_APP_SECRET,
-  SHOPIFY_APP_NGROK_HOST,
-  NODE_ENV
-} = process.env;
-
 exports.addCats = (req, res) => {
+  console.log('==============Cart add Request===================');
   console.log(req);
+  console.log('==============Cart add Response===================');
+  console.log(res);
+  res.json({ status: 'success' });
+};
+exports.updateCats = (req, res) => {
+  console.log('==============Cart update Request===================');
+  console.log(req);
+  console.log('==============Cart update Response===================');
+  console.log(res);
+  res.json({ status: 'success' });
 };

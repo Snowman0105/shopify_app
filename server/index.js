@@ -1,6 +1,7 @@
 require('isomorphic-fetch');
 require('dotenv').config();
-require('./sequelize');
+// require('./sequelize');
+const db = require('./sequelize');
 
 const initPassport = require('./passport');
 const generateToken = require('./tokens').generateToken;
@@ -34,9 +35,7 @@ const ShopifyExpress = require('@shopify/shopify-express');
 const { MemoryStrategy } = require('@shopify/shopify-express/strategies');
 const bodyParser = require('body-parser');
 const routers = require('./routers');
-
-const verifyWebhookServices = require('./services/webhook');
-
+const webhookRouters = require('./routers/webhook.route');
 const {
   SHOPIFY_APP_KEY,
   SHOPIFY_APP_HOST,
@@ -56,10 +55,14 @@ const shopifyConfig = {
       session: { accessToken, shop }
     } = request;
 
-    registerWebhook(shop, accessToken, {
-      topic: 'carts/create',
-      address: `${SHOPIFY_APP_NGROK_HOST}/carts-create`,
-      format: 'json'
+    db.Event.findAll().then(events => {
+      events.forEach(event => {
+        registerWebhook(shop, accessToken, {
+          topic: event.topic,
+          address: `${SHOPIFY_APP_NGROK_HOST}/webhook/${event.webhook}`,
+          format: 'json'
+        });
+      });
     });
 
     return response.redirect('/');
@@ -153,7 +156,7 @@ app.get('/', withShop({ authBaseUrl: '/shopify' }), function(
   });
 });
 
-app.post('/carts-create', verifyWebhookServices.addCats);
+app.use('/webhook', webhookRouters);
 
 glob('./routers/*.js', { cwd: path.resolve('./server') }, (err, routes) => {
   if (err) {

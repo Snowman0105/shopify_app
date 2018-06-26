@@ -1,6 +1,6 @@
 require('isomorphic-fetch');
 require('dotenv').config();
-// require('./sequelize');
+
 const db = require('./sequelize');
 
 const initPassport = require('./passport');
@@ -36,11 +36,16 @@ const { MemoryStrategy } = require('@shopify/shopify-express/strategies');
 const bodyParser = require('body-parser');
 const routers = require('./routers');
 const webhookRouters = require('./routers/webhook.route');
+
+const Client = require('node-rest-client').Client;
+const client = new Client();
+
 const {
   SHOPIFY_APP_KEY,
   SHOPIFY_APP_HOST,
   SHOPIFY_APP_SECRET,
   SHOPIFY_APP_NGROK_HOST,
+  SHOPIFY_PAGE_ACCESS_TOKEN,
   NODE_ENV
 } = process.env;
 
@@ -48,12 +53,12 @@ const shopifyConfig = {
   host: SHOPIFY_APP_HOST,
   apiKey: SHOPIFY_APP_KEY,
   secret: SHOPIFY_APP_SECRET,
-  scope: ['write_orders, write_products'],
+  scope: [
+    'write_orders, write_products, read_products, read_script_tags, write_script_tags'
+  ],
   shopStore: new MemoryStrategy(),
   afterAuth(request, response) {
-    const {
-      session: { accessToken, shop }
-    } = request;
+    const { session: { accessToken, shop } } = request;
 
     db.Event.findAll().then(events => {
       events.forEach(event => {
@@ -65,11 +70,43 @@ const shopifyConfig = {
       });
     });
 
+    registerAppPageWhitelistedDomain(shop, SHOPIFY_PAGE_ACCESS_TOKEN);
+    registerScriptTag(shop, accessToken);
     return response.redirect('/');
   }
 };
 
-const registerWebhook = function(shopDomain, accessToken, webhook) {
+const registerAppPageWhitelistedDomain = (shopDomain, pageAccessToken) => {
+  const params = {
+    headers: { 'Content-Type': 'application/json' },
+    data: { whitelisted_domains: [shopDomain] }
+  };
+
+  client.post(
+    `https://graph.facebook.com/v3.0/me/messenger_profile?access_token=${
+      pageAccessToken
+    }`,
+    params,
+    (data, res) => {}
+  );
+};
+
+const registerScriptTag = (shopDomain, accessToken) => {
+  const tag = {
+    event: 'onload',
+    src: `${SHOPIFY_APP_NGROK_HOST}/public/test`
+  };
+  const shopify = new ShopifyAPIClient({
+    shopName: shopDomain,
+    accessToken: accessToken
+  });
+
+  shopify.scriptTag
+    .create(tag)
+    .then(response => console.log(response), err => console.log(err));
+};
+
+const registerWebhook = (shopDomain, accessToken, webhook) => {
   const shopify = new ShopifyAPIClient({
     shopName: shopDomain,
     accessToken: accessToken
@@ -89,6 +126,14 @@ const registerWebhook = function(shopDomain, accessToken, webhook) {
 
 const app = express();
 app.server = http.createServer(app);
+
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+
 app.use(logger('combined'));
 const isDevelopment = NODE_ENV !== 'production';
 
@@ -106,6 +151,7 @@ app.use(
 
 // Run webpack hot reloading in dev
 if (isDevelopment) {
+  const staticPath = path.resolve(__dirname, '../public/test.js');
   const compiler = webpack(config);
   const middleware = webpackMiddleware(compiler, {
     hot: true,
@@ -124,6 +170,7 @@ if (isDevelopment) {
 
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
+  app.use('/public/test', express.static(staticPath));
 } else {
   const staticPath = path.resolve(__dirname, '../assets');
   app.use('/assets', express.static(staticPath));
@@ -146,9 +193,7 @@ app.get('/', withShop({ authBaseUrl: '/shopify' }), function(
   request,
   response
 ) {
-  const {
-    session: { shop, accessToken }
-  } = request;
+  const { session: { shop, accessToken } } = request;
   response.render('app', {
     title: 'Shopify Node App',
     apiKey: shopifyConfig.apiKey,
